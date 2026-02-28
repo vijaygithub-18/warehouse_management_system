@@ -1,0 +1,126 @@
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--card-bg, white);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: background 0.3s ease;
+}
+
+.info {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navButton {
+  padding: 0.5rem 1rem;
+  background: var(--input-bg, white);
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary, #374151);
+  transition: all 0.2s;
+}
+
+.navButton:hover:not(:disabled) {
+  background: var(--bg-secondary, #f9fafb);
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pages {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.5rem;
+  background: var(--input-bg, white);
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary, #374151);
+  transition: all 0.2s;
+}
+
+.pageButton:hover {
+  background: var(--bg-secondary, #f9fafb);
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.pageButton.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.perPage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.perPage select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--input-bg, white);
+  color: var(--text-primary, #374151);
+}
+
+.perPage select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .info, .perPage {
+    justify-content: center;
+  }
+
+  .controls {
+    justify-content: center;
+  }
+}

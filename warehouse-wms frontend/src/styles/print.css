@@ -1,0 +1,64 @@
+@media print {
+  /* Hide sidebar, navbar, and form elements when printing */
+  nav,
+  aside,
+  button:not(.printButton),
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  select,
+  textarea,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Adjust page layout for printing */
+  body {
+    margin: 0;
+    padding: 20px;
+  }
+
+  /* Make tables fit on page */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  /* Add borders for better readability */
+  table, th, td {
+    border: 1px solid #000;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+  }
+
+  /* Print in black and white */
+  * {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  /* Add page title */
+  @page {
+    margin: 1cm;
+  }
+
+  /* Show page numbers */
+  @page {
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+    }
+  }
+}

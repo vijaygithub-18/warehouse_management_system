@@ -1,0 +1,50 @@
+.exportButtons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.exportBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.exportBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.excel {
+  background: #10b981;
+  color: white;
+}
+
+.excel:hover {
+  background: #059669;
+}
+
+.csv {
+  background: #3b82f6;
+  color: white;
+}
+
+.csv:hover {
+  background: #2563eb;
+}
+
+.pdf {
+  background: #ef4444;
+  color: white;
+}
+
+.pdf:hover {
+  background: #dc2626;
+}

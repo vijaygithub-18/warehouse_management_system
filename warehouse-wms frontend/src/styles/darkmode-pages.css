@@ -1,0 +1,269 @@
+/* Dark Mode Patch for All Pages */
+
+/* Common styles for all page containers */
+body.dark-mode [class*="dashboard"],
+body.dark-mode [class*="inventory"],
+body.dark-mode [class*="inward"],
+body.dark-mode [class*="outward"],
+body.dark-mode [class*="reports"],
+body.dark-mode [class*="products"],
+body.dark-mode [class*="categories"] {
+  background: var(--bg-secondary) !important;
+}
+
+/* All titles and headers */
+body.dark-mode [class*="title"],
+body.dark-mode [class*="Title"] {
+  color: var(--text-primary) !important;
+}
+
+/* All subtitles */
+body.dark-mode [class*="subtitle"],
+body.dark-mode [class*="Subtitle"] {
+  color: var(--text-secondary) !important;
+}
+
+/* All cards */
+body.dark-mode [class*="Card"],
+body.dark-mode [class*="card"] {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Inline styled white backgrounds */
+body.dark-mode div[style*="background: white"],
+body.dark-mode div[style*="background: rgb(255, 255, 255)"] {
+  background: var(--card-bg) !important;
+}
+
+/* Inline styled table headers */
+body.dark-mode thead[style*="background: #f9fafb"],
+body.dark-mode thead[style*="background:#f9fafb"] {
+  background: var(--table-header-bg) !important;
+}
+
+/* Inline styled table header cells */
+body.dark-mode th[style*="color"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Inline styled table cells */
+body.dark-mode td[style*="color: #6b7280"],
+body.dark-mode td[style*="color: #374151"],
+body.dark-mode td[style*="color:#6b7280"],
+body.dark-mode td[style*="color:#374151"] {
+  color: var(--text-primary) !important;
+}
+
+/* Inline styled labels */
+body.dark-mode label[style*="color"] {
+  color: var(--text-primary) !important;
+}
+
+/* Inline styled selects and inputs */
+body.dark-mode select[style*="background"],
+body.dark-mode input[style*="background"] {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Inline styled headings */
+body.dark-mode h1[style*="color"],
+body.dark-mode h2[style*="color"],
+body.dark-mode h3[style*="color"] {
+  color: var(--text-primary) !important;
+}
+
+/* Inline styled paragraphs */
+body.dark-mode p[style*="color: #6b7280"],
+body.dark-mode p[style*="color:#6b7280"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Inline styled spans */
+body.dark-mode span[style*="fontWeight: '600'"][style*="color"] {
+  color: var(--text-primary) !important;
+}
+
+/* All form elements */
+body.dark-mode [class*="select"],
+body.dark-mode [class*="Select"],
+body.dark-mode [class*="input"],
+body.dark-mode [class*="Input"],
+body.dark-mode [class*="dateInput"] {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* All labels */
+body.dark-mode [class*="label"],
+body.dark-mode [class*="Label"] {
+  color: var(--text-primary) !important;
+}
+
+/* All tables */
+body.dark-mode [class*="table"] {
+  background: var(--card-bg) !important;
+}
+
+body.dark-mode [class*="table"] thead th {
+  background: var(--table-header-bg) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode [class*="table"] tbody td {
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode [class*="table"] tbody tr:hover {
+  background: var(--table-row-hover) !important;
+}
+
+/* Table headers */
+body.dark-mode [class*="tableHeader"],
+body.dark-mode [class*="TableHeader"] {
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode [class*="tableTitle"],
+body.dark-mode [class*="TableTitle"] {
+  color: var(--text-primary) !important;
+}
+
+/* Form headers */
+body.dark-mode [class*="formHeader"],
+body.dark-mode [class*="FormHeader"],
+body.dark-mode [class*="filterHeader"],
+body.dark-mode [class*="FilterHeader"],
+body.dark-mode [class*="reportHeader"],
+body.dark-mode [class*="ReportHeader"],
+body.dark-mode [class*="actionHeader"],
+body.dark-mode [class*="ActionHeader"] {
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Stat cards */
+body.dark-mode [class*="statCard"],
+body.dark-mode [class*="StatCard"] {
+  background: var(--card-bg) !important;
+}
+
+body.dark-mode [class*="statLabel"],
+body.dark-mode [class*="StatLabel"] {
+  color: var(--text-secondary) !important;
+}
+
+body.dark-mode [class*="statValue"],
+body.dark-mode [class*="StatValue"] {
+  color: var(--text-primary) !important;
+}
+
+/* Financial cards */
+body.dark-mode [class*="financialCard"],
+body.dark-mode [class*="FinancialCard"] {
+  background: var(--card-bg) !important;
+}
+
+body.dark-mode [class*="cardLabel"],
+body.dark-mode [class*="CardLabel"] {
+  color: var(--text-secondary) !important;
+}
+
+body.dark-mode [class*="cardValue"],
+body.dark-mode [class*="CardValue"] {
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode [class*="cardSubtext"],
+body.dark-mode [class*="CardSubtext"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Status items */
+body.dark-mode [class*="statusItem"],
+body.dark-mode [class*="StatusItem"] {
+  background: var(--input-bg) !important;
+}
+
+body.dark-mode [class*="statusLabel"],
+body.dark-mode [class*="StatusLabel"] {
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode [class*="statusCount"],
+body.dark-mode [class*="StatusCount"] {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode [class*="statusTitle"],
+body.dark-mode [class*="StatusTitle"] {
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Empty states */
+body.dark-mode [class*="emptyState"],
+body.dark-mode [class*="EmptyState"] {
+  color: var(--text-secondary) !important;
+}
+
+body.dark-mode [class*="emptyText"],
+body.dark-mode [class*="EmptyText"],
+body.dark-mode [class*="emptyHint"],
+body.dark-mode [class*="EmptyHint"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Stock values and bars */
+body.dark-mode [class*="stockBar"] {
+  background: var(--border-color) !important;
+}
+
+/* Search inputs */
+body.dark-mode [class*="searchInput"],
+body.dark-mode [class*="SearchInput"] {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Record counts and badges (non-colored) */
+body.dark-mode [class*="recordCount"]:not([class*="Badge"]) {
+  filter: brightness(0.8);
+}
+
+/* Date badges */
+body.dark-mode [class*="dateBadge"],
+body.dark-mode [class*="DateBadge"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Section titles */
+body.dark-mode [class*="sectionTitle"],
+body.dark-mode [class*="SectionTitle"] {
+  color: var(--text-primary) !important;
+}
+
+/* Report titles */
+body.dark-mode [class*="reportTitle"],
+body.dark-mode [class*="ReportTitle"] {
+  color: var(--text-primary) !important;
+}
+
+/* Stock cells */
+body.dark-mode [class*="stockCell"],
+body.dark-mode [class*="StockCell"] {
+  color: var(--text-primary) !important;
+}
+
+/* Result count */
+body.dark-mode [class*="resultCount"],
+body.dark-mode [class*="ResultCount"] {
+  color: var(--text-secondary) !important;
+}

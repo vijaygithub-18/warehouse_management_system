@@ -1,0 +1,118 @@
+/* Global Dark Mode Styles */
+
+body.dark-mode {
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+  --card-bg: #1f2937;
+  --input-bg: #374151;
+  --table-header-bg: #111827;
+  --table-row-hover: #374151;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Override Bootstrap and other white backgrounds in dark mode */
+body.dark-mode .table,
+body.dark-mode table {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode .table thead th,
+body.dark-mode table thead th {
+  background: var(--table-header-bg) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode .table tbody td,
+body.dark-mode table tbody td {
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode .table tbody tr:hover,
+body.dark-mode table tbody tr:hover {
+  background: var(--table-row-hover) !important;
+}
+
+/* Cards and containers */
+body.dark-mode [class*="Card"],
+body.dark-mode [class*="card"],
+body.dark-mode .card {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Inputs and selects */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: var(--text-secondary) !important;
+  opacity: 0.6;
+}
+
+/* Modals */
+body.dark-mode [class*="modal"] [class*="Content"],
+body.dark-mode [class*="modal"] [class*="content"] {
+  background: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Badges */
+body.dark-mode [class*="badge"],
+body.dark-mode [class*="Badge"] {
+  filter: brightness(0.9);
+}
+
+/* Dropdowns */
+body.dark-mode [class*="dropdown"],
+body.dark-mode [class*="Dropdown"] {
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Text colors */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--text-primary) !important;
+}
+
+body.dark-mode p,
+body.dark-mode span:not([class*="badge"]):not([class*="Badge"]) {
+  color: var(--text-primary);
+}
+
+/* Pagination */
+body.dark-mode [class*="pagination"] {
+  background: var(--card-bg) !important;
+}
+
+body.dark-mode [class*="pagination"] button {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode [class*="pagination"] button:hover {
+  background: var(--border-color) !important;
+}
+
+/* Empty states */
+body.dark-mode [class*="empty"] {
+  color: var(--text-secondary) !important;
+}
