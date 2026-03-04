@@ -24,7 +24,12 @@ function Shipments() {
 
   const loadShipments = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/outward/all");
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:3000/api/outward/all", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       const data = await response.json();
       setShipments(data);
     } catch (error) {

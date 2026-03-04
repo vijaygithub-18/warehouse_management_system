@@ -38,7 +38,7 @@ function Login() {
         // Store token and user info
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        
+
         // Redirect to dashboard
         navigate("/");
         window.location.reload(); // Reload to update auth state
@@ -88,8 +88,8 @@ function Login() {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={styles.loginButton}
             disabled={loading}
           >
@@ -97,7 +97,13 @@ function Login() {
           </button>
         </form>
 
-        <div className={styles.footer}>
+        <div className={styles.footer} style={{ marginTop: "1rem" }}>
+          <p>
+            <a href="/forgot-password">Forgot password?</a>
+          </p>
+          <p>
+            <a href="/register">Create an account</a>
+          </p>
           <p>Default Admin: username: admin, password: admin123</p>
         </div>
       </div>

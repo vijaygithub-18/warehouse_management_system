@@ -120,13 +120,27 @@ function Outward() {
   };
 
   const filteredOutward = outward.filter((o) => {
-    const matchesCustomer =
-      !filterCustomer || o.customer_id?.toString() === filterCustomer;
+    const matchesCustomer = !filterCustomer || o.customer_id?.toString() === filterCustomer;
+    if (!o.date) return matchesCustomer;
 
-    const recordDate = new Date(o.date);
-    const matchesDateFrom =
-      !filterDateFrom || recordDate >= new Date(filterDateFrom);
-    const matchesDateTo = !filterDateTo || recordDate <= new Date(filterDateTo);
+    const [year, month, day] = o.date.split('-').map(Number);
+    const recordDate = new Date(year, month - 1, day);
+    
+    let fromDate = null;
+    let toDate = null;
+    
+    if (filterDateFrom) {
+      const [fYear, fMonth, fDay] = filterDateFrom.split('-').map(Number);
+      fromDate = new Date(fYear, fMonth - 1, fDay);
+    }
+    
+    if (filterDateTo) {
+      const [tYear, tMonth, tDay] = filterDateTo.split('-').map(Number);
+      toDate = new Date(tYear, tMonth - 1, tDay);
+    }
+    
+    const matchesDateFrom = !fromDate || recordDate >= fromDate;
+    const matchesDateTo = !toDate || recordDate <= toDate;
 
     return matchesCustomer && matchesDateFrom && matchesDateTo;
   });
@@ -150,14 +164,14 @@ function Outward() {
 
   return (
     <div className={styles.outward}>
-      <div className={styles.header}>
+      <div className={`${styles.header} no-print`}>
         <h1 className={styles.title}>📤 Goods Dispatch (Outward)</h1>
         <p className={styles.subtitle}>
           Record outgoing inventory and shipments
         </p>
       </div>
 
-      <div className={styles.formCard}>
+      <div className={`${styles.formCard} no-print`}>
         <div
           style={{
             display: "flex",
@@ -309,7 +323,7 @@ function Outward() {
         </button>
       </div>
 
-      <div className={styles.tableCard}>
+      <div className={`${styles.tableCard} tableCard`}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>Dispatch History</h3>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
@@ -317,6 +331,7 @@ function Outward() {
               {filteredOutward.length} Records
             </span>
             <button
+              className="printButton"
               onClick={() => window.print()}
               style={{
                 padding: "0.5rem 1rem",
@@ -333,7 +348,7 @@ function Outward() {
           </div>
         </div>
 
-        <div
+        <div className="no-print"
           style={{
             display: "flex",
             gap: "0.5rem",
@@ -383,6 +398,11 @@ function Outward() {
 
         {filteredOutward.length > 0 ? (
           <>
+            <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
+              <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>OUTWARD REPORT</h1>
+              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()}</p>
+              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Records: {filteredOutward.length}</p>
+            </div>
             <table className={styles.table}>
               <thead>
                 <tr>

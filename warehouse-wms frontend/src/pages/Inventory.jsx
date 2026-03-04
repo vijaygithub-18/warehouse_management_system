@@ -80,7 +80,7 @@ function Inventory() {
 
   return (
     <div className={styles.inventory}>
-      <div className={styles.header}>
+      <div className={`${styles.header} no-print`}>
         <h1 className={styles.title}>📊 Stock Overview</h1>
         <p className={styles.subtitle}>
           View current stock levels across all products
@@ -88,7 +88,12 @@ function Inventory() {
       </div>
 
       <div className={styles.tableCard}>
-        <div className={styles.tableHeader}>
+        <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
+          <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>STOCK OVERVIEW REPORT</h1>
+          <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
+          <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Products: {filteredStock.length}</p>
+        </div>
+        <div className={`${styles.tableHeader} no-print`}>
           <div>
             <h3 className={styles.tableTitle}>Current Stock Levels</h3>
             <p
@@ -173,7 +178,7 @@ function Inventory() {
 
         {filteredStock.length > 0 ? (
           <>
-            <table className={styles.table}>
+            <table className={styles.table} style={{ pageBreakInside: 'auto' }}>
               <thead>
                 <tr>
                   <th>SKU</th>
@@ -187,7 +192,7 @@ function Inventory() {
                   const level = getStockLevel(s.stock);
                   const percentage = getStockPercentage(s.stock);
                   return (
-                    <tr key={s.id}>
+                    <tr key={s.id} style={{ pageBreakInside: 'avoid' }}>
                       <td>
                         <span className={styles.skuBadge}>{s.sku}</span>
                       </td>
@@ -209,6 +214,9 @@ function Inventory() {
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
+                          <span className="print-only" style={{ display: 'none', marginLeft: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                            {level.charAt(0).toUpperCase() + level.slice(1)}
+                          </span>
                         </div>
                       </td>
                     </tr>
@@ -216,14 +224,16 @@ function Inventory() {
                 })}
               </tbody>
             </table>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              totalItems={filteredStock.length}
-              itemsPerPage={itemsPerPage}
-              onPageChange={handlePageChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-            />
+            <div className="no-print">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={filteredStock.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
           </>
         ) : (
           <div className={styles.emptyState}>

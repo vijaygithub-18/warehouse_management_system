@@ -43,6 +43,11 @@ exports.addInward = async (req, res) => {
 // Get All Inward Records
 exports.getAllInward = async (req, res) => {
   try {
+    const { page = 1, limit = 100 } = req.query;
+    const offset = (page - 1) * limit;
+    
+    const countResult = await pool.query('SELECT COUNT(*) FROM inward');
+    
     const result = await pool.query(`
       SELECT i.id, p.name AS product_name, p.name AS product, p.name AS name, p.sku, r.rack_code,
              i.quantity_cartons, i.quantity_cartons as quantity, COALESCE(s.name, i.supplier) as supplier,
@@ -52,8 +57,15 @@ exports.getAllInward = async (req, res) => {
       JOIN racks r ON i.rack_id = r.id
       LEFT JOIN suppliers s ON i.supplier_id = s.id
       ORDER BY i.date DESC
-    `);
-    res.json(result.rows);
+      LIMIT $1 OFFSET $2
+    `, [limit, offset]);
+    
+    res.json({
+      data: result.rows,
+      total: parseInt(countResult.rows[0].count),
+      page: parseInt(page),
+      limit: parseInt(limit)
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching inward records" });

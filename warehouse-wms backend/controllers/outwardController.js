@@ -51,6 +51,11 @@ exports.addOutward = async (req, res) => {
 // Get All Outward Records
 exports.getAllOutward = async (req, res) => {
   try {
+    const { page = 1, limit = 100 } = req.query;
+    const offset = (page - 1) * limit;
+    
+    const countResult = await pool.query('SELECT COUNT(*) FROM outward');
+    
     const result = await pool.query(`
       SELECT o.id, p.name AS product_name, p.name AS product, p.name AS name, p.sku,
              o.quantity_cartons, o.quantity_cartons as quantity, COALESCE(c.name, o.customer) as customer,
@@ -59,8 +64,15 @@ exports.getAllOutward = async (req, res) => {
       JOIN products p ON o.product_id = p.id
       LEFT JOIN customers c ON o.customer_id = c.id
       ORDER BY o.date DESC
-    `);
-    res.json(result.rows);
+      LIMIT $1 OFFSET $2
+    `, [limit, offset]);
+    
+    res.json({
+      data: result.rows,
+      total: parseInt(countResult.rows[0].count),
+      page: parseInt(page),
+      limit: parseInt(limit)
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error fetching outward records" });

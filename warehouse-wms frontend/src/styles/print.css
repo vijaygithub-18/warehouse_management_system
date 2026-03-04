@@ -1,64 +1,62 @@
 @media print {
-  /* Hide sidebar, navbar, and form elements when printing */
-  nav,
-  aside,
+  /* Hide everything except table */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only the table card and its contents */
+  .tableCard,
+  .tableCard * {
+    visibility: visible;
+  }
+
+  /* Position table card at top of page */
+  .tableCard {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide specific elements within table card */
+  .no-print,
+  .no-print *,
   button:not(.printButton),
-  input[type="text"],
-  input[type="number"],
-  input[type="email"],
+  input,
   select,
-  textarea,
-  .no-print {
+  textarea {
+    visibility: hidden !important;
     display: none !important;
   }
 
-  /* Adjust page layout for printing */
-  body {
-    margin: 0;
-    padding: 20px;
+  /* Show print-only elements */
+  .print-only,
+  .print-only * {
+    visibility: visible !important;
+    display: block !important;
   }
 
-  /* Make tables fit on page */
+  /* Table styling */
   table {
     width: 100%;
     border-collapse: collapse;
-    page-break-inside: auto;
-  }
-
-  tr {
-    page-break-inside: avoid;
-    page-break-after: auto;
-  }
-
-  thead {
-    display: table-header-group;
-  }
-
-  /* Add borders for better readability */
-  table, th, td {
-    border: 1px solid #000;
+    margin-top: 20px;
   }
 
   th, td {
+    border: 1px solid #000;
     padding: 8px;
     text-align: left;
   }
 
-  /* Print in black and white */
-  * {
-    color: #000 !important;
-    background: #fff !important;
+  th {
+    background-color: #f3f4f6 !important;
+    font-weight: bold;
   }
 
-  /* Add page title */
+  /* Page settings */
   @page {
     margin: 1cm;
-  }
-
-  /* Show page numbers */
-  @page {
-    @bottom-right {
-      content: "Page " counter(page) " of " counter(pages);
-    }
+    size: A4;
   }
 }

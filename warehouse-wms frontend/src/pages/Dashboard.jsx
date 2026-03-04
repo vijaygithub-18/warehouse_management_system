@@ -70,6 +70,12 @@ function Dashboard() {
   const [topProducts, setTopProducts] = useState([]);
   const [monthlyTrend, setMonthlyTrend] = useState([]);
   const [categoryStock, setCategoryStock] = useState([]);
+  const [todaySummary, setTodaySummary] = useState({
+    inward: { count: 0, quantity: 0 },
+    outward: { count: 0, quantity: 0 },
+    adjustments: 0,
+    pendingShipments: 0
+  });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -108,6 +114,9 @@ function Dashboard() {
       fetch("http://localhost:3000/api/dashboard/category-stock").then((res) =>
         res.json(),
       ),
+      fetch("http://localhost:3000/api/dashboard/today-summary").then((res) =>
+        res.json(),
+      ),
     ])
       .then(
         ([
@@ -121,6 +130,7 @@ function Dashboard() {
           top,
           trend,
           catStock,
+          todayData,
         ]) => {
           console.log("✅ Dashboard data loaded:", {
             products,
@@ -133,6 +143,7 @@ function Dashboard() {
             top,
             trend,
             catStock,
+            todayData,
           });
           setTotalProducts(products.total);
           setTotalStock(stock.total);
@@ -144,6 +155,7 @@ function Dashboard() {
           setTopProducts(top);
           setMonthlyTrend(trend);
           setCategoryStock(catStock);
+          setTodaySummary(todayData);
           setLastUpdated(new Date());
           setLoading(false);
           setRefreshing(false);
@@ -260,6 +272,12 @@ function Dashboard() {
             <div className={styles.statIcon}>📦</div>
           </div>
           <h2 className={styles.statValue}>{totalProducts}</h2>
+          <button 
+            onClick={() => navigate('/products')} 
+            className={styles.quickAction}
+          >
+            View All →
+          </button>
         </div>
 
         <div className={`${styles.statCard} ${styles.stock}`}>
@@ -268,6 +286,12 @@ function Dashboard() {
             <div className={styles.statIcon}>📊</div>
           </div>
           <h2 className={styles.statValue}>{totalStock.toLocaleString()}</h2>
+          <button 
+            onClick={() => navigate('/inventory')} 
+            className={styles.quickAction}
+          >
+            View Inventory →
+          </button>
         </div>
 
         <div className={`${styles.statCard} ${styles.lowStock}`}>
@@ -276,6 +300,17 @@ function Dashboard() {
             <div className={styles.statIcon}>⚠️</div>
           </div>
           <h2 className={styles.statValue}>{lowStock.length}</h2>
+          <button 
+            onClick={() => {
+              if (lowStock.length > 0) {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+              }
+            }} 
+            className={styles.quickAction}
+            disabled={lowStock.length === 0}
+          >
+            {lowStock.length > 0 ? 'View Details ↓' : 'All Good ✓'}
+          </button>
         </div>
 
         <div className={`${styles.statCard} ${styles.inward}`}>
@@ -284,6 +319,74 @@ function Dashboard() {
             <div className={styles.statIcon}>📥</div>
           </div>
           <h2 className={styles.statValue}>{recentInward.length}</h2>
+          <button 
+            onClick={() => navigate('/inward')} 
+            className={styles.quickAction}
+          >
+            View All →
+          </button>
+        </div>
+      </div>
+
+      {/* NEW: Today's Summary Widget */}
+      <div className={styles.todaySummary}>
+        <h2 className={styles.sectionTitle}>📅 Today's Summary</h2>
+        <div className={styles.summaryGrid}>
+          <div className={styles.summaryCard}>
+            <div className={styles.summaryIcon}>📦</div>
+            <div className={styles.summaryContent}>
+              <h3 className={styles.summaryValue}>{todaySummary.inward.count}</h3>
+              <p className={styles.summaryLabel}>Inward Today ({todaySummary.inward.quantity} units)</p>
+            </div>
+            <button 
+              onClick={() => navigate('/inward')} 
+              className={styles.summaryBtn}
+            >
+              + Add Inward
+            </button>
+          </div>
+
+          <div className={styles.summaryCard}>
+            <div className={styles.summaryIcon}>📤</div>
+            <div className={styles.summaryContent}>
+              <h3 className={styles.summaryValue}>{todaySummary.outward.count}</h3>
+              <p className={styles.summaryLabel}>Outward Today ({todaySummary.outward.quantity} units)</p>
+            </div>
+            <button 
+              onClick={() => navigate('/outward')} 
+              className={styles.summaryBtn}
+            >
+              + Add Outward
+            </button>
+          </div>
+
+          <div className={styles.summaryCard}>
+            <div className={styles.summaryIcon}>⚖️</div>
+            <div className={styles.summaryContent}>
+              <h3 className={styles.summaryValue}>{todaySummary.adjustments}</h3>
+              <p className={styles.summaryLabel}>Adjustments Today</p>
+            </div>
+            <button 
+              onClick={() => navigate('/adjustments')} 
+              className={styles.summaryBtn}
+            >
+              + Adjust Stock
+            </button>
+          </div>
+
+          <div className={styles.summaryCard}>
+            <div className={styles.summaryIcon}>🚚</div>
+            <div className={styles.summaryContent}>
+              <h3 className={styles.summaryValue}>{todaySummary.pendingShipments}</h3>
+              <p className={styles.summaryLabel}>Pending Shipments</p>
+            </div>
+            <button 
+              onClick={() => navigate('/shipments')} 
+              className={styles.summaryBtn}
+            >
+              View Shipments
+            </button>
+          </div>
         </div>
       </div>
 

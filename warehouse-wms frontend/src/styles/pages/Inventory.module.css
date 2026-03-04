@@ -289,3 +289,87 @@ body.dark-mode .stockValue.zero {
     padding: 0.5rem;
   }
 }
+
+/* Print Styles */
+@media print {
+  .inventory {
+    background: white;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .tableCard {
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .table thead th {
+    background: #f3f4f6 !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .table tbody td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    color: #1f2937;
+  }
+
+  .table tbody tr {
+    page-break-inside: avoid;
+  }
+
+  .skuBadge {
+    background: transparent !important;
+    color: #1f2937 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  .stockValue {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #1f2937 !important;
+  }
+
+  .stockBar {
+    display: none !important;
+  }
+
+  .stockCell {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Ensure all table content is visible */
+  .table tbody td strong {
+    color: #1f2937 !important;
+  }
+}

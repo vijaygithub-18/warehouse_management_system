@@ -57,7 +57,10 @@ function Inward() {
   const loadInward = () => {
     fetch("http://localhost:3000/api/inward/all")
       .then((res) => res.json())
-      .then((data) => setInward(data));
+      .then((data) => {
+        console.log("Inward data loaded:", data);
+        setInward(data);
+      });
   };
 
   useEffect(() => {
@@ -150,15 +153,44 @@ function Inward() {
   };
 
   const filteredInward = inward.filter((i) => {
-    const matchesSupplier =
-      !filterSupplier || i.supplier_id?.toString() === filterSupplier;
+    console.log('Filtering record:', { 
+      id: i.id, 
+      supplier_id: i.supplier_id, 
+      date: i.date,
+      filterSupplier,
+      filterDateFrom,
+      filterDateTo
+    });
+    
+    const matchesSupplier = !filterSupplier || i.supplier_id?.toString() === filterSupplier;
+    console.log('Supplier match:', matchesSupplier);
+    
+    if (!i.date) return matchesSupplier;
 
-    const recordDate = new Date(i.date);
-    const matchesDateFrom =
-      !filterDateFrom || recordDate >= new Date(filterDateFrom);
-    const matchesDateTo = !filterDateTo || recordDate <= new Date(filterDateTo);
+    const [year, month, day] = i.date.split('-').map(Number);
+    const recordDate = new Date(year, month - 1, day);
+    
+    let fromDate = null;
+    let toDate = null;
+    
+    if (filterDateFrom) {
+      const [fYear, fMonth, fDay] = filterDateFrom.split('-').map(Number);
+      fromDate = new Date(fYear, fMonth - 1, fDay);
+    }
+    
+    if (filterDateTo) {
+      const [tYear, tMonth, tDay] = filterDateTo.split('-').map(Number);
+      toDate = new Date(tYear, tMonth - 1, tDay);
+    }
+    
+    const matchesDateFrom = !fromDate || recordDate >= fromDate;
+    const matchesDateTo = !toDate || recordDate <= toDate;
+    
+    console.log('Date match:', { matchesDateFrom, matchesDateTo, recordDate, fromDate, toDate });
 
-    return matchesSupplier && matchesDateFrom && matchesDateTo;
+    const result = matchesSupplier && matchesDateFrom && matchesDateTo;
+    console.log('Final result:', result);
+    return result;
   });
 
   const totalPages = Math.ceil(filteredInward.length / itemsPerPage);
@@ -180,14 +212,14 @@ function Inward() {
 
   return (
     <div className={styles.inward}>
-      <div className={styles.header}>
+      <div className={`${styles.header} no-print`}>
         <h1 className={styles.title}>📥 Goods Receiving (Inward)</h1>
         <p className={styles.subtitle}>
           Record incoming inventory and stock receipts
         </p>
       </div>
 
-      <div className={styles.formCard}>
+      <div className={`${styles.formCard} no-print`}>
         <div
           style={{
             display: "flex",
@@ -355,15 +387,15 @@ function Inward() {
         </button>
       </div>
 
-      <div className={styles.tableCard}>
-        <div className={styles.tableHeader}>
+      <div className={`${styles.tableCard} tableCard`}>
+        <div className={styles.tableHeader} style={{ className: 'no-print' }}>
           <h3 className={styles.tableTitle}>Inward History</h3>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <span className={styles.recordCount}>
               {filteredInward.length} Records
             </span>
             <button
-              className={styles.printButton}
+              className="printButton"
               onClick={() => window.print()}
               style={{
                 padding: "0.5rem 1rem",
@@ -380,7 +412,7 @@ function Inward() {
           </div>
         </div>
 
-        <div
+        <div className="no-print"
           style={{
             display: "flex",
             gap: "0.5rem",
@@ -430,6 +462,11 @@ function Inward() {
 
         {filteredInward.length > 0 ? (
           <>
+            <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
+              <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>INWARD REPORT</h1>
+              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()}</p>
+              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Records: {filteredInward.length}</p>
+            </div>
             <table className={styles.table}>
               <thead>
                 <tr>

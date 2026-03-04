@@ -156,8 +156,14 @@
 }
 
 body.dark-mode .categoryCode {
-  background: #8b5cf6;
-  color: #ffffff;
+  background: #8b5cf6 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure high specificity so badges remain readable in dark mode */
+body.dark-mode .categoryCard .categoryCode {
+  background: #8b5cf6 !important;
+  color: #ffffff !important;
 }
 
 .categoryDescription {

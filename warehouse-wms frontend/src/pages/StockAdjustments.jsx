@@ -54,9 +54,13 @@ function StockAdjustments() {
       return;
     }
 
+    const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:3000/api/adjustments/add", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({
         product_id: productId,
         quantity: type === "in" ? quantity : -quantity,

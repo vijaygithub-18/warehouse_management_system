@@ -114,6 +114,97 @@
   transform: translateY(-1px);
 }
 
+.reportButton.suppliers {
+  background: #8b5cf6;
+  color: white;
+}
+
+.reportButton.suppliers:hover {
+  background: #7c3aed;
+  transform: translateY(-1px);
+}
+
+.reportButton.customers {
+  background: #f59e0b;
+  color: white;
+}
+
+.reportButton.customers:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+}
+
+.reportButton.movement {
+  background: #06b6d4;
+  color: white;
+}
+
+.reportButton.movement:hover {
+  background: #0891b2;
+  transform: translateY(-1px);
+}
+
+.productMovementSection {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.movementGrid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.select {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.badge {
+  background: #eff6ff;
+  color: #3b82f6;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.amount {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.typeIn {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.typeOut {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
 .reportCard {
   background: white;
   border-radius: 12px;
@@ -250,6 +341,10 @@
 
 @media (max-width: 1024px) {
   .buttonGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .movementGrid {
     grid-template-columns: 1fr;
   }
 }

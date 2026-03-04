@@ -52,14 +52,14 @@ i.grn as grn_number,
 p.name,
 p.sku,
 i.quantity_cartons as quantity,
-i.supplier
+COALESCE(s.name, i.supplier) as supplier
 
 FROM inward i
 
-LEFT JOIN products p
-ON i.product_id=p.id
+LEFT JOIN products p ON i.product_id = p.id
+LEFT JOIN suppliers s ON i.supplier_id = s.id
 
-ORDER BY i.id DESC
+ORDER BY i.date DESC
 LIMIT 5
 `);
 
@@ -264,6 +264,61 @@ router.get("/category-stock", async (req, res) => {
   } catch (error) {
     console.error('Error in /category-stock:', error.message);
     res.json([]);
+  }
+});
+
+// TODAY'S SUMMARY
+
+router.get("/today-summary", async (req, res) => {
+  try {
+    // Today's Inward
+    const todayInward = await pool.query(`
+      SELECT COUNT(*) as count, COALESCE(SUM(quantity_cartons), 0) as total_qty
+      FROM inward
+      WHERE DATE(date) = CURRENT_DATE
+    `);
+
+    // Today's Outward
+    const todayOutward = await pool.query(`
+      SELECT COUNT(*) as count, COALESCE(SUM(quantity_cartons), 0) as total_qty
+      FROM outward
+      WHERE DATE(date) = CURRENT_DATE
+    `);
+
+    // Today's Adjustments
+    const todayAdjustments = await pool.query(`
+      SELECT COUNT(*) as count
+      FROM stock_adjustments
+      WHERE DATE(created_at) = CURRENT_DATE
+    `);
+
+    // Pending Shipments
+    const pendingShipments = await pool.query(`
+      SELECT COUNT(*) as count
+      FROM outward
+      WHERE shipment_status IN ('Pending', 'Processing')
+    `);
+
+    res.json({
+      inward: {
+        count: parseInt(todayInward.rows[0].count) || 0,
+        quantity: parseInt(todayInward.rows[0].total_qty) || 0
+      },
+      outward: {
+        count: parseInt(todayOutward.rows[0].count) || 0,
+        quantity: parseInt(todayOutward.rows[0].total_qty) || 0
+      },
+      adjustments: parseInt(todayAdjustments.rows[0].count) || 0,
+      pendingShipments: parseInt(pendingShipments.rows[0].count) || 0
+    });
+  } catch (error) {
+    console.error('Error in /today-summary:', error.message);
+    res.json({
+      inward: { count: 0, quantity: 0 },
+      outward: { count: 0, quantity: 0 },
+      adjustments: 0,
+      pendingShipments: 0
+    });
   }
 });
 

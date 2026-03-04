@@ -21,7 +21,7 @@ router.post("/add", verifyToken, async (req, res) => {
 
     let prefix = "PR";
 
-    console.log("Received category:", category); // Debug log
+    console.log("Received category:", category);
 
     if (category === "Paper Cups" || category === "Paper Cup") prefix = "PC";
     else if (category === "Pizza Boxes" || category === "Pizza Box")
@@ -40,7 +40,7 @@ router.post("/add", verifyToken, async (req, res) => {
     else if (category === "Aluminium" || category === "Aluminium")
       prefix = "ALU";
 
-    console.log("Using prefix:", prefix); // Debug log
+    console.log("Using prefix:", prefix);
 
     // FIND HIGHEST SKU NUMBER WITH SAME PREFIX
     const lastProduct = await pool.query(
@@ -91,6 +91,9 @@ router.post("/add", verifyToken, async (req, res) => {
     );
   } catch (error) {
     console.error(error);
+    if (error.constraint === 'unique_product_sku') {
+      return res.status(400).json({ error: "SKU already exists" });
+    }
     res.status(500).json({ error: "Error adding product" });
   }
 });

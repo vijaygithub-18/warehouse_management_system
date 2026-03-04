@@ -342,18 +342,6 @@ function Profile() {
             <span className={styles.label}>Account Created</span>
             <span className={styles.value}>{getJoinDate()}</span>
           </div>
-
-          <div className={styles.infoItem}>
-            <span className={styles.label}>Two-Factor Auth</span>
-            <span className={styles.value} style={{ color: '#ef4444' }}>❌ Not Enabled</span>
-          </div>
-
-          <div className={styles.infoItem}>
-            <span className={styles.label}>Session Timeout</span>
-            <span className={styles.value}>
-              {localStorage.getItem("sessionTimeout") || "30"} minutes
-            </span>
-          </div>
         </div>
       </div>
 

@@ -245,4 +245,28 @@ router.delete("/:id", verifyToken, isAdmin, async (req, res) => {
   }
 });
 
+// Admin reset user password
+router.post("/:id/reset-password", verifyToken, isAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const crypto = require("crypto");
+    const tempPassword = crypto.randomBytes(8).toString("hex");
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+    await pool.query(
+      "UPDATE users SET password = $1 WHERE id = $2",
+      [hashedPassword, id]
+    );
+
+    res.json({ 
+      message: "Password reset successfully",
+      tempPassword: tempPassword,
+      note: "User must change password on next login"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error resetting password" });
+  }
+});
+
 module.exports = router;

@@ -106,6 +106,38 @@ class EmailService {
   }
 
   async sendDailyReport(stats, recipients) {
+    let lowStockTable = '';
+    
+    if (stats.lowStockProducts && stats.lowStockProducts.length > 0) {
+      const productRows = stats.lowStockProducts.map(p => `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${p.name}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${p.sku}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; color: #ef4444; font-weight: bold;">${p.stock}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${p.minimum_stock}</td>
+        </tr>
+      `).join('');
+      
+      lowStockTable = `
+        <div style="margin: 20px 0;">
+          <h3 style="color: #ef4444;">⚠️ Low Stock Alert (Top 10)</h3>
+          <table style="width: 100%; border-collapse: collapse; margin: 10px 0;">
+            <thead>
+              <tr style="background: #f9fafb;">
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e5e7eb;">Product</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e5e7eb;">SKU</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e5e7eb;">Current Stock</th>
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e5e7eb;">Min Required</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${productRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #3b82f6;">📊 Daily Inventory Report</h2>
@@ -114,10 +146,12 @@ class EmailService {
         <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin-top: 0;">Inventory Summary</h3>
           <p><strong>Total Products:</strong> ${stats.totalProducts}</p>
-          <p><strong>Total Stock Value:</strong> $${stats.totalValue?.toFixed(2) || '0.00'}</p>
+          <p><strong>Products In Stock:</strong> ${stats.totalValue}</p>
           <p><strong>Low Stock Items:</strong> <span style="color: #f59e0b;">${stats.lowStockCount}</span></p>
           <p><strong>Out of Stock Items:</strong> <span style="color: #ef4444;">${stats.outOfStockCount}</span></p>
         </div>
+        
+        ${lowStockTable}
         
         <p>Review your inventory and take necessary actions.</p>
         
