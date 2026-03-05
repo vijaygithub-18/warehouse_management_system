@@ -19,19 +19,32 @@ function Reports() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(25);
 
+  // useEffect(() => {
+  //   loadProducts();
+  // }, []);
+
+  // const loadProducts = async () => {
+  //   try {
+  //     const res = await fetch("http://localhost:3000/api/products/all");
+  //     const data = await res.json();
+  //     setProducts(data.data || data);
+  //   } catch {
+  //     console.error("Failed to load products");
+  //   }
+  // };
+
   useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/products/all");
+        const data = await res.json();
+        setProducts(data.data || data);
+      } catch {
+        console.error("Failed to load products");
+      }
+    };
     loadProducts();
   }, []);
-
-  const loadProducts = async () => {
-    try {
-      const res = await fetch("http://localhost:3000/api/products/all");
-      const data = await res.json();
-      setProducts(data.data || data);
-    } catch (error) {
-      console.error("Failed to load products");
-    }
-  };
 
   const loadStock = async () => {
     const res = await fetch("http://localhost:3000/api/reports/stock");
@@ -47,7 +60,7 @@ function Reports() {
       return;
     }
     const res = await fetch(
-      `http://localhost:3000/api/reports/inward?from=${from}&to=${to}`
+      `http://localhost:3000/api/reports/inward?from=${from}&to=${to}`,
     );
     const data = await res.json();
     setInward(data);
@@ -61,25 +74,25 @@ function Reports() {
       return;
     }
     const res = await fetch(
-      `http://localhost:3000/api/reports/outward?from=${from}&to=${to}`
+      `http://localhost:3000/api/reports/outward?from=${from}&to=${to}`,
     );
     const data = await res.json();
     setOutward(data);
-    clearOtherReports('outward');
+    clearOtherReports("outward");
   };
 
   const loadSuppliers = async () => {
     const res = await fetch("http://localhost:3000/api/reports/suppliers");
     const data = await res.json();
     setSuppliers(data);
-    clearOtherReports('suppliers');
+    clearOtherReports("suppliers");
   };
 
   const loadCustomers = async () => {
     const res = await fetch("http://localhost:3000/api/reports/customers");
     const data = await res.json();
     setCustomers(data);
-    clearOtherReports('customers');
+    clearOtherReports("customers");
   };
 
   const loadProductMovement = async () => {
@@ -94,16 +107,16 @@ function Reports() {
     const res = await fetch(url);
     const data = await res.json();
     setProductMovement(data);
-    clearOtherReports('movement');
+    clearOtherReports("movement");
   };
 
   const clearOtherReports = (keep) => {
-    if (keep !== 'stock') setStock([]);
-    if (keep !== 'inward') setInward([]);
-    if (keep !== 'outward') setOutward([]);
-    if (keep !== 'suppliers') setSuppliers([]);
-    if (keep !== 'customers') setCustomers([]);
-    if (keep !== 'movement') setProductMovement([]);
+    if (keep !== "stock") setStock([]);
+    if (keep !== "inward") setInward([]);
+    if (keep !== "outward") setOutward([]);
+    if (keep !== "suppliers") setSuppliers([]);
+    if (keep !== "customers") setCustomers([]);
+    if (keep !== "movement") setProductMovement([]);
   };
 
   const getCurrentData = () => {
@@ -119,11 +132,14 @@ function Reports() {
   const currentData = getCurrentData();
   const totalPages = Math.ceil(currentData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = currentData.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedData = currentData.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -225,7 +241,11 @@ function Reports() {
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
             <h3 className={styles.reportTitle}>📦 Stock Report</h3>
-            <ExportButtons data={stock} filename="stock_report" title="Stock Report" />
+            <ExportButtons
+              data={stock}
+              filename="stock_report"
+              title="Stock Report"
+            />
           </div>
 
           <>
@@ -240,20 +260,20 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((s) => (
-                <tr key={s.id}>
-                  <td>
-                    <span className={styles.skuBadge}>{s.sku}</span>
-                  </td>
-                  <td>
-                    <strong>{s.name}</strong>
-                  </td>
-                  <td>
-                    <span className={styles.categoryBadge}>{s.category}</span>
-                  </td>
-                  <td>
-                    <span className={styles.stockValue}>{s.stock}</span>
-                  </td>
-                </tr>
+                  <tr key={s.id}>
+                    <td>
+                      <span className={styles.skuBadge}>{s.sku}</span>
+                    </td>
+                    <td>
+                      <strong>{s.name}</strong>
+                    </td>
+                    <td>
+                      <span className={styles.categoryBadge}>{s.category}</span>
+                    </td>
+                    <td>
+                      <span className={styles.stockValue}>{s.stock}</span>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -273,7 +293,11 @@ function Reports() {
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
             <h3 className={styles.reportTitle}>📥 Inward Report</h3>
-            <ExportButtons data={inward} filename="inward_report" title="Inward Report" />
+            <ExportButtons
+              data={inward}
+              filename="inward_report"
+              title="Inward Report"
+            />
           </div>
 
           <>
@@ -290,20 +314,20 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((i) => (
-                <tr key={i.id}>
-                  <td>
-                    <strong>{i.name}</strong>
-                  </td>
-                  <td>
-                    <span className={styles.skuBadge}>{i.sku}</span>
-                  </td>
-                  <td>
-                    <span className={styles.quantityIn}>+{i.quantity}</span>
-                  </td>
-                  <td>{i.supplier_name || "—"}</td>
-                  <td>{i.grn_number || "—"}</td>
-                  <td>{i.created_at}</td>
-                </tr>
+                  <tr key={i.id}>
+                    <td>
+                      <strong>{i.name}</strong>
+                    </td>
+                    <td>
+                      <span className={styles.skuBadge}>{i.sku}</span>
+                    </td>
+                    <td>
+                      <span className={styles.quantityIn}>+{i.quantity}</span>
+                    </td>
+                    <td>{i.supplier_name || "—"}</td>
+                    <td>{i.grn_number || "—"}</td>
+                    <td>{i.created_at}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -323,7 +347,11 @@ function Reports() {
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
             <h3 className={styles.reportTitle}>📤 Outward Report</h3>
-            <ExportButtons data={outward} filename="outward_report" title="Outward Report" />
+            <ExportButtons
+              data={outward}
+              filename="outward_report"
+              title="Outward Report"
+            />
           </div>
 
           <>
@@ -340,20 +368,20 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((o) => (
-                <tr key={o.id}>
-                  <td>
-                    <strong>{o.name}</strong>
-                  </td>
-                  <td>
-                    <span className={styles.skuBadge}>{o.sku}</span>
-                  </td>
-                  <td>
-                    <span className={styles.quantityOut}>-{o.quantity}</span>
-                  </td>
-                  <td>{o.customer_name || "—"}</td>
-                  <td>{o.dispatch_number || "—"}</td>
-                  <td>{o.created_at}</td>
-                </tr>
+                  <tr key={o.id}>
+                    <td>
+                      <strong>{o.name}</strong>
+                    </td>
+                    <td>
+                      <span className={styles.skuBadge}>{o.sku}</span>
+                    </td>
+                    <td>
+                      <span className={styles.quantityOut}>-{o.quantity}</span>
+                    </td>
+                    <td>{o.customer_name || "—"}</td>
+                    <td>{o.dispatch_number || "—"}</td>
+                    <td>{o.created_at}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -372,8 +400,14 @@ function Reports() {
       {suppliers.length > 0 && (
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
-            <h3 className={styles.reportTitle}>🏢 Supplier Performance Report</h3>
-            <ExportButtons data={suppliers} filename="supplier_report" title="Supplier Performance" />
+            <h3 className={styles.reportTitle}>
+              🏢 Supplier Performance Report
+            </h3>
+            <ExportButtons
+              data={suppliers}
+              filename="supplier_report"
+              title="Supplier Performance"
+            />
           </div>
 
           <>
@@ -390,14 +424,24 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((s) => (
-                <tr key={s.id}>
-                  <td><strong>{s.name}</strong></td>
-                  <td>{s.email || "—"}</td>
-                  <td>{s.contact || "—"}</td>
-                  <td><span className={styles.badge}>{s.total_orders}</span></td>
-                  <td><span className={styles.amount}>₹{parseFloat(s.total_amount || 0).toFixed(2)}</span></td>
-                  <td><span className={styles.badge}>{s.total_deliveries}</span></td>
-                </tr>
+                  <tr key={s.id}>
+                    <td>
+                      <strong>{s.name}</strong>
+                    </td>
+                    <td>{s.email || "—"}</td>
+                    <td>{s.contact || "—"}</td>
+                    <td>
+                      <span className={styles.badge}>{s.total_orders}</span>
+                    </td>
+                    <td>
+                      <span className={styles.amount}>
+                        ₹{parseFloat(s.total_amount || 0).toFixed(2)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.badge}>{s.total_deliveries}</span>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -417,7 +461,11 @@ function Reports() {
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
             <h3 className={styles.reportTitle}>👥 Customer Analytics Report</h3>
-            <ExportButtons data={customers} filename="customer_report" title="Customer Analytics" />
+            <ExportButtons
+              data={customers}
+              filename="customer_report"
+              title="Customer Analytics"
+            />
           </div>
 
           <>
@@ -434,14 +482,24 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((c) => (
-                <tr key={c.id}>
-                  <td><strong>{c.name}</strong></td>
-                  <td>{c.email || "—"}</td>
-                  <td>{c.contact || "—"}</td>
-                  <td><span className={styles.badge}>{c.total_orders}</span></td>
-                  <td><span className={styles.amount}>₹{parseFloat(c.total_amount || 0).toFixed(2)}</span></td>
-                  <td><span className={styles.badge}>{c.total_shipments}</span></td>
-                </tr>
+                  <tr key={c.id}>
+                    <td>
+                      <strong>{c.name}</strong>
+                    </td>
+                    <td>{c.email || "—"}</td>
+                    <td>{c.contact || "—"}</td>
+                    <td>
+                      <span className={styles.badge}>{c.total_orders}</span>
+                    </td>
+                    <td>
+                      <span className={styles.amount}>
+                        ₹{parseFloat(c.total_amount || 0).toFixed(2)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.badge}>{c.total_shipments}</span>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -461,7 +519,11 @@ function Reports() {
         <div className={styles.reportCard}>
           <div className={styles.reportHeader}>
             <h3 className={styles.reportTitle}>📊 Product Movement Report</h3>
-            <ExportButtons data={productMovement} filename="product_movement" title="Product Movement" />
+            <ExportButtons
+              data={productMovement}
+              filename="product_movement"
+              title="Product Movement"
+            />
           </div>
 
           <>
@@ -477,21 +539,32 @@ function Reports() {
               </thead>
               <tbody>
                 {paginatedData.map((m, idx) => (
-                <tr key={idx}>
-                  <td>
-                    <span className={m.type === 'IN' ? styles.typeIn : styles.typeOut}>
-                      {m.type === 'IN' ? '📥 IN' : '📤 OUT'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={m.type === 'IN' ? styles.quantityIn : styles.quantityOut}>
-                      {m.type === 'IN' ? '+' : '-'}{m.quantity}
-                    </span>
-                  </td>
-                  <td>{m.reference}</td>
-                  <td>{m.party || "—"}</td>
-                  <td>{m.date}</td>
-                </tr>
+                  <tr key={idx}>
+                    <td>
+                      <span
+                        className={
+                          m.type === "IN" ? styles.typeIn : styles.typeOut
+                        }
+                      >
+                        {m.type === "IN" ? "📥 IN" : "📤 OUT"}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          m.type === "IN"
+                            ? styles.quantityIn
+                            : styles.quantityOut
+                        }
+                      >
+                        {m.type === "IN" ? "+" : "-"}
+                        {m.quantity}
+                      </span>
+                    </td>
+                    <td>{m.reference}</td>
+                    <td>{m.party || "—"}</td>
+                    <td>{m.date}</td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -507,16 +580,20 @@ function Reports() {
         </div>
       )}
 
-      {stock.length === 0 && inward.length === 0 && outward.length === 0 && 
-       suppliers.length === 0 && customers.length === 0 && productMovement.length === 0 && (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>📊</div>
-          <p className={styles.emptyText}>No report generated yet</p>
-          <p className={styles.emptyHint}>
-            Select dates and click a report button to view data
-          </p>
-        </div>
-      )}
+      {stock.length === 0 &&
+        inward.length === 0 &&
+        outward.length === 0 &&
+        suppliers.length === 0 &&
+        customers.length === 0 &&
+        productMovement.length === 0 && (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>📊</div>
+            <p className={styles.emptyText}>No report generated yet</p>
+            <p className={styles.emptyHint}>
+              Select dates and click a report button to view data
+            </p>
+          </div>
+        )}
     </div>
   );
 }
