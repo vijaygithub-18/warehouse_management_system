@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../config";
-import styles from "../styles/pages/Login.module.css";\nimport logoImage from "../assets/image.png";
+import styles from "../styles/pages/Login.module.css";
+import logoImage from "../assets/image.png";
 
 function Register() {
   const [username, setUsername] = useState("");
