@@ -4,6 +4,7 @@ import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
 import BarcodeGenerator from "../components/BarcodeGenerator";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Products.module.css";
 
 function Products() {
@@ -39,19 +40,19 @@ function Products() {
 
   // loader functions defined before useEffect so they can be referenced safely
   const loadProducts = async () => {
-    const res = await fetch("http://localhost:3000/api/products/all");
+    const res = await fetch(`${BASE_URL}/products/all`);
     const data = await res.json();
     setProducts(data);
   };
 
   const loadCategories = async () => {
-    const res = await fetch("http://localhost:3000/api/categories");
+    const res = await fetch(`${BASE_URL}/categories`);
     const data = await res.json();
     setCategories(data);
   };
 
   const loadRacks = async () => {
-    const res = await fetch("http://localhost:3000/api/racks/all");
+    const res = await fetch(`${BASE_URL}/racks/all`);
     const data = await res.json();
     setRacks(data);
   };
@@ -90,8 +91,8 @@ function Products() {
 
     const token = localStorage.getItem("token");
     const url = editingId
-      ? `http://localhost:3000/api/products/update/${editingId}`
-      : "http://localhost:3000/api/products/add";
+      ? `${BASE_URL}/products/update/${editingId}`
+      : `${BASE_URL}/products/add`;
 
     const response = await fetch(url, {
       method: editingId ? "PUT" : "POST",
@@ -142,15 +143,12 @@ function Products() {
   const deleteProduct = async (id) => {
     if (!window.confirm("Delete this product?")) return;
     const token = localStorage.getItem("token");
-    const response = await fetch(
-      `http://localhost:3000/api/products/delete/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const response = await fetch(`${BASE_URL}/products/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     if (response.ok) {
       loadProducts();

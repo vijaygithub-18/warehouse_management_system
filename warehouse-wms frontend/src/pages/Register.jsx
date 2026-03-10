@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "../styles/pages/Login.module.css";
+import BASE_URL from "../config";
+import styles from "../styles/pages/Login.module.css";\nimport logoImage from "../assets/image.png";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -59,7 +60,12 @@ function Register() {
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
         <div className={styles.logo}>
-          <div className={styles.logoIcon}>📦</div>
+          <img
+            src={logoImage}
+            alt="Warehouse logo"
+            className={styles.logoIcon}
+          />
+          <h1 className={styles.logoTitle}>TPC</h1>
           <h1 className={styles.logoTitle}>Warehouse WMS</h1>
           <p className={styles.logoSubtitle}>Register a new account</p>
         </div>

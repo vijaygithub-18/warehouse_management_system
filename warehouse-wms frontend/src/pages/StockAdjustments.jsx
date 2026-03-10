@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/StockAdjustments.module.css";
 
 function StockAdjustments() {
@@ -23,13 +24,13 @@ function StockAdjustments() {
   }, []);
 
   const loadProducts = () => {
-    fetch("http://localhost:3000/api/products/all")
+    fetch(`${BASE_URL}/products/all`)
       .then((res) => res.json())
       .then((data) => setProducts(data));
   };
 
   const loadAdjustments = () => {
-    fetch("http://localhost:3000/api/adjustments/all")
+    fetch(`${BASE_URL}/adjustments/all`)
       .then((res) => res.json())
       .then((data) => setAdjustments(data));
   };
@@ -49,17 +50,23 @@ function StockAdjustments() {
     }
 
     // Validate stock for decrease
-    if (type === "out" && selectedProduct && parseInt(quantity) > selectedProduct.stock) {
-      toast.error(`Cannot decrease by ${quantity}. Current stock is only ${selectedProduct.stock}`);
+    if (
+      type === "out" &&
+      selectedProduct &&
+      parseInt(quantity) > selectedProduct.stock
+    ) {
+      toast.error(
+        `Cannot decrease by ${quantity}. Current stock is only ${selectedProduct.stock}`,
+      );
       return;
     }
 
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/api/adjustments/add", {
+    const response = await fetch(`${BASE_URL}/adjustments/add`, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         product_id: productId,
@@ -86,20 +93,24 @@ function StockAdjustments() {
 
   const filteredAdjustments = adjustments.filter((adj) => {
     const matchesReason = !filterReason || adj.reason === filterReason;
-    const matchesType = !filterType || 
+    const matchesType =
+      !filterType ||
       (filterType === "in" && adj.quantity > 0) ||
       (filterType === "out" && adj.quantity < 0);
-    
+
     return matchesReason && matchesType;
   });
 
   const totalPages = Math.ceil(filteredAdjustments.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedAdjustments = filteredAdjustments.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedAdjustments = filteredAdjustments.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -128,7 +139,7 @@ function StockAdjustments() {
               onChange={(e) => {
                 const id = e.target.value;
                 setProductId(id);
-                const product = products.find(p => p.id === parseInt(id));
+                const product = products.find((p) => p.id === parseInt(id));
                 setSelectedProduct(product || null);
               }}
             >
@@ -140,15 +151,27 @@ function StockAdjustments() {
               ))}
             </select>
             {selectedProduct && (
-              <div style={{
-                marginTop: '0.5rem',
-                padding: '0.75rem',
-                background: '#f0f9ff',
-                border: '1px solid #bfdbfe',
-                borderRadius: '6px',
-                fontSize: '0.875rem'
-              }}>
-                <strong>Current Stock:</strong> <span style={{ color: '#1e40af', fontSize: '1.25rem', fontWeight: '700' }}>{selectedProduct.stock || 0}</span> units
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  padding: "0.75rem",
+                  background: "#f0f9ff",
+                  border: "1px solid #bfdbfe",
+                  borderRadius: "6px",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <strong>Current Stock:</strong>{" "}
+                <span
+                  style={{
+                    color: "#1e40af",
+                    fontSize: "1.25rem",
+                    fontWeight: "700",
+                  }}
+                >
+                  {selectedProduct.stock || 0}
+                </span>{" "}
+                units
               </div>
             )}
           </div>
@@ -163,17 +186,22 @@ function StockAdjustments() {
               onChange={(e) => setQuantity(e.target.value)}
             />
             {selectedProduct && quantity && (
-              <div style={{
-                marginTop: '0.5rem',
-                padding: '0.5rem',
-                background: '#fef3c7',
-                border: '1px solid #fbbf24',
-                borderRadius: '6px',
-                fontSize: '0.875rem'
-              }}>
-                <strong>After Adjustment:</strong> 
-                <span style={{ marginLeft: '0.5rem', fontWeight: '700' }}>
-                  {selectedProduct.stock || 0} → {(selectedProduct.stock || 0) + parseInt(quantity || 0)} (IN) / {(selectedProduct.stock || 0) - parseInt(quantity || 0)} (OUT)
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  padding: "0.5rem",
+                  background: "#fef3c7",
+                  border: "1px solid #fbbf24",
+                  borderRadius: "6px",
+                  fontSize: "0.875rem",
+                }}
+              >
+                <strong>After Adjustment:</strong>
+                <span style={{ marginLeft: "0.5rem", fontWeight: "700" }}>
+                  {selectedProduct.stock || 0} →{" "}
+                  {(selectedProduct.stock || 0) + parseInt(quantity || 0)} (IN)
+                  / {(selectedProduct.stock || 0) - parseInt(quantity || 0)}{" "}
+                  (OUT)
                 </span>
               </div>
             )}
@@ -227,20 +255,20 @@ function StockAdjustments() {
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>Adjustment History</h3>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <span className={styles.recordCount}>
               {filteredAdjustments.length} Records
             </span>
-            <button 
+            <button
               onClick={() => window.print()}
               style={{
-                padding: '0.5rem 1rem',
-                background: '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '0.875rem'
+                padding: "0.5rem 1rem",
+                background: "#3b82f6",
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                fontSize: "0.875rem",
               }}
             >
               🖨️ Print
@@ -248,12 +276,22 @@ function StockAdjustments() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-          <select 
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            marginBottom: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <select
             className={styles.select}
             value={filterReason}
-            onChange={(e) => { setFilterReason(e.target.value); setCurrentPage(1); }}
-            style={{ flex: '1 1 200px' }}
+            onChange={(e) => {
+              setFilterReason(e.target.value);
+              setCurrentPage(1);
+            }}
+            style={{ flex: "1 1 200px" }}
           >
             <option value="">All Reasons</option>
             <option value="Damaged">Damaged</option>
@@ -264,11 +302,14 @@ function StockAdjustments() {
             <option value="Return">Return</option>
             <option value="Other">Other</option>
           </select>
-          <select 
+          <select
             className={styles.select}
             value={filterType}
-            onChange={(e) => { setFilterType(e.target.value); setCurrentPage(1); }}
-            style={{ flex: '1 1 150px' }}
+            onChange={(e) => {
+              setFilterType(e.target.value);
+              setCurrentPage(1);
+            }}
+            style={{ flex: "1 1 150px" }}
           >
             <option value="">All Types</option>
             <option value="in">Adjust IN (+)</option>
@@ -292,36 +333,36 @@ function StockAdjustments() {
               </thead>
               <tbody>
                 {paginatedAdjustments.map((adj) => (
-                <tr key={adj.id}>
-                  <td>
-                    <span className={styles.idBadge}>#{adj.id}</span>
-                  </td>
-                  <td>
-                    <span className={styles.skuBadge}>{adj.sku}</span>
-                  </td>
-                  <td>
-                    <strong>{adj.name}</strong>
-                  </td>
-                  <td>
-                    <span
-                      className={
-                        adj.quantity > 0
-                          ? styles.quantityIn
-                          : styles.quantityOut
-                      }
-                    >
-                      {adj.quantity > 0 ? "+" : ""}
-                      {adj.quantity}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={styles.reasonBadge}>{adj.reason}</span>
-                  </td>
-                  <td>{adj.notes || "—"}</td>
-                  <td>
-                    <span className={styles.dateBadge}>{adj.created_at}</span>
-                  </td>
-                </tr>
+                  <tr key={adj.id}>
+                    <td>
+                      <span className={styles.idBadge}>#{adj.id}</span>
+                    </td>
+                    <td>
+                      <span className={styles.skuBadge}>{adj.sku}</span>
+                    </td>
+                    <td>
+                      <strong>{adj.name}</strong>
+                    </td>
+                    <td>
+                      <span
+                        className={
+                          adj.quantity > 0
+                            ? styles.quantityIn
+                            : styles.quantityOut
+                        }
+                      >
+                        {adj.quantity > 0 ? "+" : ""}
+                        {adj.quantity}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={styles.reasonBadge}>{adj.reason}</span>
+                    </td>
+                    <td>{adj.notes || "—"}</td>
+                    <td>
+                      <span className={styles.dateBadge}>{adj.created_at}</span>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>

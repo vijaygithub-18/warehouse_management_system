@@ -1,11 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/components/Sidebar.module.css";
 
+// actual logo provided by user in assets folder
+import logoImage from "../assets/image.png";
+
 function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = (path) => location.pathname === path;
-  
+
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleLogout = () => {
@@ -18,10 +21,16 @@ function Sidebar() {
     <div className={styles.sidebar}>
       <div className={styles.header}>
         <Link to="/" className={styles.logo}>
-          <span className={styles.logoIcon}>📦</span>
+          {/* use an actual image file instead of the emoji */}
+          <img
+            src={logoImage}
+            alt="Warehouse logo"
+            className={styles.logoIcon}
+          />
           <div className={styles.logoText}>
             <h1 className={styles.logoTitle}>Warehouse WMS</h1>
-            <p className={styles.logoSubtitle}>Management System</p>
+            <p className={styles.logoSubtitle}>Thee Packaging Company</p>
+            {/* <p className={styles.logoSubtitle}>Management System</p> */}
           </div>
         </Link>
       </div>
@@ -214,18 +223,18 @@ function Sidebar() {
             <p className={styles.userRole}>{user.role || "Role"}</p>
           </div>
         </div>
-        <button 
+        <button
           onClick={handleLogout}
           style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: '#ef4444',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            marginTop: '1rem',
-            fontWeight: '600'
+            width: "100%",
+            padding: "0.75rem",
+            background: "#ef4444",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            marginTop: "1rem",
+            fontWeight: "600",
           }}
         >
           🚪 Logout

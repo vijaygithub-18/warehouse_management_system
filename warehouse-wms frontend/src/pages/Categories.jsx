@@ -4,6 +4,7 @@ import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
 import styles from "../styles/pages/Categories.module.css";
+import BASE_URL from "../config";
 
 function Categories() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Categories() {
   // fetch helper must be defined before using in effect to satisfy linting
   async function loadCategories() {
     try {
-      const response = await fetch("http://localhost:3000/api/categories");
+      const response = await fetch(`${BASE_URL}/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(Array.isArray(data) ? data : []);
@@ -55,8 +56,8 @@ function Categories() {
     try {
       const token = localStorage.getItem("token");
       const url = editingId
-        ? `http://localhost:3000/api/categories/${editingId}`
-        : "http://localhost:3000/api/categories";
+        ? `${BASE_URL}/categories/${editingId}`
+        : `${BASE_URL}/categories`;
 
       const response = await fetch(url, {
         method: editingId ? "PUT" : "POST",
@@ -98,13 +99,10 @@ function Categories() {
     if (!window.confirm("Delete this category?")) return;
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `http://localhost:3000/api/categories/${id}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await fetch(`${BASE_URL}/categories/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (response.ok) {
         loadCategories();
         toast.success("Category deleted successfully!");

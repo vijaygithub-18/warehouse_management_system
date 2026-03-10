@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import styles from "../styles/pages/Reports.module.css";
+import BASE_URL from "../config";
 
 function ActivityLogs() {
   const toast = useToast();
@@ -24,7 +25,7 @@ function ActivityLogs() {
   const loadUsers = useCallback(async () => {
     try {
       console.log("📊 Fetching users...");
-      const res = await fetch("http://localhost:3000/api/activity/users", {
+      const res = await fetch(`${BASE_URL}/activity/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -39,7 +40,7 @@ function ActivityLogs() {
   const loadLogs = useCallback(async () => {
     try {
       console.log("📝 Fetching logs with filter:", filter);
-      let url = "http://localhost:3000/api/activity/all?limit=200";
+      let url = `${BASE_URL}/activity/all?limit=200`;
       if (filter.action) url += `&action=${filter.action}`;
       if (filter.entity_type) url += `&entity_type=${filter.entity_type}`;
       if (filter.user_id) url += `&user_id=${filter.user_id}`;
@@ -61,7 +62,7 @@ function ActivityLogs() {
   const loadStats = useCallback(async () => {
     try {
       console.log("📈 Fetching stats...");
-      const res = await fetch("http://localhost:3000/api/activity/stats", {
+      const res = await fetch(`${BASE_URL}/activity/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -76,7 +77,7 @@ function ActivityLogs() {
   const loadCurrentUser = useCallback(async () => {
     try {
       console.log("👤 Fetching current user...");
-      const res = await fetch("http://localhost:3000/api/auth/me", {
+      const res = await fetch(`${BASE_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
@@ -131,13 +132,10 @@ function ActivityLogs() {
     )
       return;
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/activity/clear?days=${days}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const res = await fetch(`${BASE_URL}/activity/clear?days=${days}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (res.ok) {
         if (data.deleted_count === 0) {

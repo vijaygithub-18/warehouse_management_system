@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Suppliers.module.css";
 
 function Suppliers() {
@@ -23,7 +24,7 @@ function Suppliers() {
   }, []);
 
   const loadSuppliers = () => {
-    fetch("http://localhost:3000/api/suppliers/all")
+    fetch(`${BASE_URL}/suppliers/all`)
       .then((res) => res.json())
       .then((data) => setSuppliers(data));
   };
@@ -34,7 +35,7 @@ function Suppliers() {
       return;
     }
     if (contact) {
-      const cleanContact = contact.replace(/[^0-9]/g, '');
+      const cleanContact = contact.replace(/[^0-9]/g, "");
       if (cleanContact.length < 10 || cleanContact.length > 15) {
         toast.error("Please enter a valid phone number (10-15 digits)");
         return;
@@ -46,15 +47,15 @@ function Suppliers() {
     }
 
     const url = editingId
-      ? `http://localhost:3000/api/suppliers/${editingId}`
-      : "http://localhost:3000/api/suppliers/add";
+      ? `${BASE_URL}/suppliers/${editingId}`
+      : `${BASE_URL}/suppliers/add`;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await fetch(url, {
       method: editingId ? "PUT" : "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ name, contact, email, address }),
     });
@@ -63,7 +64,11 @@ function Suppliers() {
       clearForm();
       loadSuppliers();
       setShowModal(false);
-      toast.success(editingId ? "Supplier updated successfully!" : "Supplier added successfully!");
+      toast.success(
+        editingId
+          ? "Supplier updated successfully!"
+          : "Supplier added successfully!",
+      );
     } else {
       const error = await response.json();
       toast.error(error.error || "Failed to save supplier");
@@ -81,10 +86,10 @@ function Suppliers() {
 
   const deleteSupplier = async (id) => {
     if (!window.confirm("Delete this supplier?")) return;
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:3000/api/suppliers/${id}`, {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/suppliers/${id}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (response.ok) {
       loadSuppliers();
@@ -108,24 +113,29 @@ function Suppliers() {
   };
 
   const filteredSuppliers = suppliers.filter((s) => {
-    const matchesSearch = s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesContact = !filterContact || 
+
+    const matchesContact =
+      !filterContact ||
       (filterContact === "has" && s.contact) ||
       (filterContact === "no" && !s.contact);
-    
+
     return matchesSearch && matchesContact;
   });
 
   const totalPages = Math.ceil(filteredSuppliers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedSuppliers = filteredSuppliers.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedSuppliers = filteredSuppliers.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -147,12 +157,18 @@ function Suppliers() {
           className={styles.searchInput}
           placeholder="🔍 Search suppliers..."
           value={searchTerm}
-          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
         />
-        <select 
-          className={styles.filterSelect} 
-          value={filterContact} 
-          onChange={(e) => { setFilterContact(e.target.value); setCurrentPage(1); }}
+        <select
+          className={styles.filterSelect}
+          value={filterContact}
+          onChange={(e) => {
+            setFilterContact(e.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="">All Suppliers</option>
           <option value="has">Has Contact</option>
@@ -163,11 +179,15 @@ function Suppliers() {
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>Supplier List</h3>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <span className={styles.resultCount}>
               {filteredSuppliers.length} suppliers
             </span>
-            <ExportButtons data={filteredSuppliers} filename="suppliers" title="Suppliers List" />
+            <ExportButtons
+              data={filteredSuppliers}
+              filename="suppliers"
+              title="Suppliers List"
+            />
           </div>
         </div>
 
@@ -186,33 +206,33 @@ function Suppliers() {
               </thead>
               <tbody>
                 {paginatedSuppliers.map((supplier) => (
-                <tr key={supplier.id}>
-                  <td>
-                    <span className={styles.idBadge}>#{supplier.id}</span>
-                  </td>
-                  <td>
-                    <strong>{supplier.name}</strong>
-                  </td>
-                  <td>{supplier.contact || "—"}</td>
-                  <td>{supplier.email || "—"}</td>
-                  <td>{supplier.address || "—"}</td>
-                  <td>
-                    <div className={styles.actionButtons}>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => editSupplier(supplier)}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => deleteSupplier(supplier.id)}
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  <tr key={supplier.id}>
+                    <td>
+                      <span className={styles.idBadge}>#{supplier.id}</span>
+                    </td>
+                    <td>
+                      <strong>{supplier.name}</strong>
+                    </td>
+                    <td>{supplier.contact || "—"}</td>
+                    <td>{supplier.email || "—"}</td>
+                    <td>{supplier.address || "—"}</td>
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => editSupplier(supplier)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => deleteSupplier(supplier.id)}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>

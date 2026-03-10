@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Racks.module.css";
 
 function Racks() {
@@ -20,7 +21,7 @@ function Racks() {
 
   const loadRacks = async () => {
     console.log("Loading racks...");
-    const res = await fetch("http://localhost:3000/api/racks/all");
+    const res = await fetch(`${BASE_URL}/racks/all`);
     const data = await res.json();
     console.log("Racks loaded:", data);
     setRacks([...data]);
@@ -33,16 +34,16 @@ function Racks() {
     }
 
     const url = editingId
-      ? `http://localhost:3000/api/racks/${editingId}`
-      : "http://localhost:3000/api/racks/add";
+      ? `${BASE_URL}/racks/${editingId}`
+      : `${BASE_URL}/racks/add`;
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await fetch(url, {
         method: editingId ? "PUT" : "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ rack_code: rackCode, description }),
       });
@@ -54,7 +55,9 @@ function Racks() {
         setShowModal(false);
         clearForm();
         await loadRacks();
-        toast.success(editingId ? "Rack updated successfully!" : "Rack added successfully!");
+        toast.success(
+          editingId ? "Rack updated successfully!" : "Rack added successfully!",
+        );
       } else {
         toast.error(data.error || "Failed to save rack");
       }
@@ -73,10 +76,10 @@ function Racks() {
 
   const deleteRack = async (id) => {
     if (!window.confirm("Delete this rack?")) return;
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:3000/api/racks/${id}`, {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/racks/${id}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (response.ok) {
       loadRacks();
@@ -97,18 +100,22 @@ function Racks() {
     setShowModal(true);
   };
 
-  const filteredRacks = racks.filter((r) =>
-    r.rack_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    r.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRacks = racks.filter(
+    (r) =>
+      r.rack_code?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      r.description?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const totalPages = Math.ceil(filteredRacks.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRacks = filteredRacks.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedRacks = filteredRacks.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -130,14 +137,19 @@ function Racks() {
           className={styles.searchInput}
           placeholder="🔍 Search racks by code or description..."
           value={searchTerm}
-          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
         />
       </div>
 
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>Rack Locations</h3>
-          <span className={styles.resultCount}>{filteredRacks.length} racks</span>
+          <span className={styles.resultCount}>
+            {filteredRacks.length} racks
+          </span>
         </div>
 
         {filteredRacks.length > 0 ? (
@@ -153,31 +165,33 @@ function Racks() {
               </thead>
               <tbody>
                 {paginatedRacks.map((rack) => (
-                <tr key={rack.id}>
-                  <td>
-                    <span className={styles.idBadge}>#{rack.id}</span>
-                  </td>
-                  <td>
-                    <strong className={styles.rackCode}>{rack.rack_code}</strong>
-                  </td>
-                  <td>{rack.description || "—"}</td>
-                  <td>
-                    <div className={styles.actionButtons}>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => editRack(rack)}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => deleteRack(rack.id)}
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  <tr key={rack.id}>
+                    <td>
+                      <span className={styles.idBadge}>#{rack.id}</span>
+                    </td>
+                    <td>
+                      <strong className={styles.rackCode}>
+                        {rack.rack_code}
+                      </strong>
+                    </td>
+                    <td>{rack.description || "—"}</td>
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => editRack(rack)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => deleteRack(rack.id)}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>

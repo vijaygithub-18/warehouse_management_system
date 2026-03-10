@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Users.module.css";
 
 function Users() {
@@ -33,7 +34,7 @@ function Users() {
 
   const loadUsers = () => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3000/api/users/all", {
+    fetch(`${BASE_URL}/users/all`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -65,12 +66,13 @@ function Users() {
 
     const token = localStorage.getItem("token");
     const url = editingId
-      ? `http://localhost:3000/api/users/${editingId}`
-      : "http://localhost:3000/api/users/add";
+      ? `${BASE_URL}/users/${editingId}`
+      : `${BASE_URL}/users/add`;
 
-    const body = editingId && !password
-      ? { username, email, role }
-      : { username, email, password, role };
+    const body =
+      editingId && !password
+        ? { username, email, role }
+        : { username, email, password, role };
 
     const response = await fetch(url, {
       method: editingId ? "PUT" : "POST",
@@ -85,7 +87,9 @@ function Users() {
       clearForm();
       loadUsers();
       setShowModal(false);
-      toast.success(editingId ? "User updated successfully!" : "User added successfully!");
+      toast.success(
+        editingId ? "User updated successfully!" : "User added successfully!",
+      );
     } else {
       const error = await response.json();
       toast.error(error.error || "Failed to save user");
@@ -103,13 +107,13 @@ function Users() {
 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
-    
+
     const token = localStorage.getItem("token");
-    const response = await fetch(`http://localhost:3000/api/users/${id}`, {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
-    
+
     if (response.ok) {
       loadUsers();
       toast.success("User deleted successfully!");
@@ -139,21 +143,25 @@ function Users() {
   };
 
   const filteredUsers = users.filter((u) => {
-    const matchesSearch = u.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      u.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       u.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     const matchesRole = !filterRole || u.role === filterRole;
-    
+
     return matchesSearch && matchesRole;
   });
 
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -175,12 +183,18 @@ function Users() {
           className={styles.searchInput}
           placeholder="🔍 Search users by username or email..."
           value={searchTerm}
-          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
         />
-        <select 
-          className={styles.filterSelect} 
-          value={filterRole} 
-          onChange={(e) => { setFilterRole(e.target.value); setCurrentPage(1); }}
+        <select
+          className={styles.filterSelect}
+          value={filterRole}
+          onChange={(e) => {
+            setFilterRole(e.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="">All Roles</option>
           <option value="admin">Admin</option>
@@ -192,7 +206,9 @@ function Users() {
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>User List</h3>
-          <span className={styles.resultCount}>{filteredUsers.length} users</span>
+          <span className={styles.resultCount}>
+            {filteredUsers.length} users
+          </span>
         </div>
 
         {filteredUsers.length > 0 ? (
@@ -210,38 +226,40 @@ function Users() {
               </thead>
               <tbody>
                 {paginatedUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>
-                    <span className={styles.idBadge}>#{user.id}</span>
-                  </td>
-                  <td>
-                    <strong>{user.username}</strong>
-                  </td>
-                  <td>{user.email}</td>
-                  <td>
-                    <span className={`${styles.roleBadge} ${getRoleBadgeClass(user.role)}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td>{new Date(user.created_at).toLocaleDateString()}</td>
-                  <td>
-                    <div className={styles.actionButtons}>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => editUser(user)}
+                  <tr key={user.id}>
+                    <td>
+                      <span className={styles.idBadge}>#{user.id}</span>
+                    </td>
+                    <td>
+                      <strong>{user.username}</strong>
+                    </td>
+                    <td>{user.email}</td>
+                    <td>
+                      <span
+                        className={`${styles.roleBadge} ${getRoleBadgeClass(user.role)}`}
                       >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => deleteUser(user.id)}
-                        disabled={user.id === currentUser.id}
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td>{new Date(user.created_at).toLocaleDateString()}</td>
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => editUser(user)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => deleteUser(user.id)}
+                          disabled={user.id === currentUser.id}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -311,7 +329,9 @@ function Users() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={editingId ? "Enter new password" : "Enter password"}
+                  placeholder={
+                    editingId ? "Enter new password" : "Enter password"
+                  }
                 />
               </div>
 

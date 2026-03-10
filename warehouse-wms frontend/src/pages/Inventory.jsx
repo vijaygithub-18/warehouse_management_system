@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Inventory.module.css";
 
 function Inventory() {
@@ -16,7 +17,7 @@ function Inventory() {
   const loadStock = () => {
     console.log("🔄 Refreshing stock data...");
     setIsRefreshing(true);
-    fetch("http://localhost:3000/api/inventory/stock")
+    fetch(`${BASE_URL}/inventory/stock`)
       .then((res) => res.json())
       .then((data) => {
         console.log("✅ Stock data loaded:", data.length, "products");
@@ -88,10 +89,20 @@ function Inventory() {
       </div>
 
       <div className={styles.tableCard}>
-        <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
-          <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>STOCK OVERVIEW REPORT</h1>
-          <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()} {new Date().toLocaleTimeString()}</p>
-          <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Products: {filteredStock.length}</p>
+        <div
+          className="print-only"
+          style={{ marginBottom: "2rem", display: "none" }}
+        >
+          <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1f2937" }}>
+            STOCK OVERVIEW REPORT
+          </h1>
+          <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+            Generated: {new Date().toLocaleDateString()}{" "}
+            {new Date().toLocaleTimeString()}
+          </p>
+          <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+            Total Products: {filteredStock.length}
+          </p>
         </div>
         <div className={`${styles.tableHeader} no-print`}>
           <div>
@@ -178,7 +189,7 @@ function Inventory() {
 
         {filteredStock.length > 0 ? (
           <>
-            <table className={styles.table} style={{ pageBreakInside: 'auto' }}>
+            <table className={styles.table} style={{ pageBreakInside: "auto" }}>
               <thead>
                 <tr>
                   <th>SKU</th>
@@ -192,7 +203,7 @@ function Inventory() {
                   const level = getStockLevel(s.stock);
                   const percentage = getStockPercentage(s.stock);
                   return (
-                    <tr key={s.id} style={{ pageBreakInside: 'avoid' }}>
+                    <tr key={s.id} style={{ pageBreakInside: "avoid" }}>
                       <td>
                         <span className={styles.skuBadge}>{s.sku}</span>
                       </td>
@@ -214,7 +225,15 @@ function Inventory() {
                               style={{ width: `${percentage}%` }}
                             />
                           </div>
-                          <span className="print-only" style={{ display: 'none', marginLeft: '0.5rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                          <span
+                            className="print-only"
+                            style={{
+                              display: "none",
+                              marginLeft: "0.5rem",
+                              fontSize: "0.875rem",
+                              color: "#6b7280",
+                            }}
+                          >
                             {level.charAt(0).toUpperCase() + level.slice(1)}
                           </span>
                         </div>

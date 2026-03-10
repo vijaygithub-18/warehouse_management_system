@@ -1,5 +1,7 @@
 import { useState } from "react";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Login.module.css";
+import logoImage from "../assets/image.png";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -19,14 +21,11 @@ function ForgotPassword() {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        "http://localhost:3000/api/auth/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message || "Check your email for reset link");
@@ -45,7 +44,12 @@ function ForgotPassword() {
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
         <div className={styles.logo}>
-          <div className={styles.logoIcon}>📦</div>
+          <img
+            src={logoImage}
+            alt="Warehouse logo"
+            className={styles.logoIcon}
+          />
+          <h1 className={styles.logoTitle}>TPC</h1>
           <h1 className={styles.logoTitle}>Warehouse WMS</h1>
           <p className={styles.logoSubtitle}>Reset Your Password</p>
         </div>

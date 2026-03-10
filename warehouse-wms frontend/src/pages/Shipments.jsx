@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Shipments.module.css";
 
 function Shipments() {
@@ -25,10 +26,10 @@ function Shipments() {
   const loadShipments = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/outward/all", {
+      const response = await fetch(`${BASE_URL}/outward/all`, {
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = await response.json();
       setShipments(data);
@@ -54,7 +55,7 @@ function Shipments() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/outward/update-shipment/${selectedShipment.id}`,
+        `${BASE_URL}/outward/update-shipment/${selectedShipment.id}`,
         {
           method: "PUT",
           headers: {
@@ -69,7 +70,7 @@ function Shipments() {
             estimated_delivery: estimatedDelivery,
             notes: notes,
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -87,67 +88,72 @@ function Shipments() {
 
   const getTrackingUrl = (courier, trackingNum, trackingType) => {
     if (!trackingNum) return null;
-    
+
     // Delhivery uses different URLs for AWB vs LRN
-    if (courier === 'Delhivery') {
-      if (trackingType === 'LRN') {
+    if (courier === "Delhivery") {
+      if (trackingType === "LRN") {
         return `https://www.delhivery.com/track/lr/${trackingNum}`;
       } else {
         return `https://www.delhivery.com/track/package/${trackingNum}`;
       }
     }
-    
+
     // Other couriers - only support AWB
-    if (trackingType === 'LRN') return null;
-    
+    if (trackingType === "LRN") return null;
+
     const urls = {
-      "BlueDart": `https://www.bluedart.com/tracking/${trackingNum}`,
-      "DTDC": `https://www.dtdc.in/tracking.asp?strCnno=${trackingNum}`,
-      "FedEx": `https://www.fedex.com/fedextrack/?trknbr=${trackingNum}`,
-      "DHL": `https://www.dhl.com/in-en/home/tracking.html?tracking-id=${trackingNum}`,
+      BlueDart: `https://www.bluedart.com/tracking/${trackingNum}`,
+      DTDC: `https://www.dtdc.in/tracking.asp?strCnno=${trackingNum}`,
+      FedEx: `https://www.fedex.com/fedextrack/?trknbr=${trackingNum}`,
+      DHL: `https://www.dhl.com/in-en/home/tracking.html?tracking-id=${trackingNum}`,
       "India Post": `https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx?consignmentno=${trackingNum}`,
     };
-    
+
     return urls[courier] || null;
   };
 
   const getStatusBadge = (status) => {
     const colors = {
-      'Pending': '#9ca3af',
-      'Processing': '#fbbf24',
-      'Shipped': '#3b82f6',
-      'In Transit': '#8b5cf6',
-      'Out for Delivery': '#f59e0b',
-      'Delivered': '#10b981',
-      'Failed': '#ef4444',
-      'RTO': '#dc2626'
+      Pending: "#9ca3af",
+      Processing: "#fbbf24",
+      Shipped: "#3b82f6",
+      "In Transit": "#8b5cf6",
+      "Out for Delivery": "#f59e0b",
+      Delivered: "#10b981",
+      Failed: "#ef4444",
+      RTO: "#dc2626",
     };
-    
+
     return (
-      <span style={{
-        background: colors[status] || '#6b7280',
-        color: 'white',
-        padding: '0.25rem 0.75rem',
-        borderRadius: '6px',
-        fontWeight: '600',
-        fontSize: '0.875rem'
-      }}>
+      <span
+        style={{
+          background: colors[status] || "#6b7280",
+          color: "white",
+          padding: "0.25rem 0.75rem",
+          borderRadius: "6px",
+          fontWeight: "600",
+          fontSize: "0.875rem",
+        }}
+      >
         {status}
       </span>
     );
   };
 
-  const filteredShipments = shipments.filter(s => 
-    !filterStatus || s.shipment_status === filterStatus
+  const filteredShipments = shipments.filter(
+    (s) => !filterStatus || s.shipment_status === filterStatus,
   );
 
   const totalPages = Math.ceil(filteredShipments.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedShipments = filteredShipments.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedShipments = filteredShipments.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -159,14 +165,19 @@ function Shipments() {
     <div className={styles.shipments}>
       <div className={styles.header}>
         <h1 className={styles.title}>🚚 Shipment Tracking</h1>
-        <p className={styles.subtitle}>Track all outward shipments and delivery status</p>
+        <p className={styles.subtitle}>
+          Track all outward shipments and delivery status
+        </p>
       </div>
 
       <div className={styles.filterCard}>
         <select
           className={styles.select}
           value={filterStatus}
-          onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setFilterStatus(e.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="">All Status</option>
           <option value="Pending">Pending</option>
@@ -182,7 +193,9 @@ function Shipments() {
 
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
-          <h3 className={styles.tableTitle}>Shipments ({filteredShipments.length})</h3>
+          <h3 className={styles.tableTitle}>
+            Shipments ({filteredShipments.length})
+          </h3>
         </div>
 
         {filteredShipments.length > 0 ? (
@@ -204,27 +217,42 @@ function Shipments() {
               <tbody>
                 {paginatedShipments.map((shipment) => (
                   <tr key={shipment.id}>
-                    <td><strong>{shipment.invoice}</strong></td>
+                    <td>
+                      <strong>{shipment.invoice}</strong>
+                    </td>
                     <td>{shipment.product_name}</td>
                     <td>{shipment.customer}</td>
                     <td>
-                      <span style={{
-                        background: shipment.tracking_type === 'LRN' ? '#8b5cf6' : '#3b82f6',
-                        color: 'white',
-                        padding: '0.25rem 0.5rem',
-                        borderRadius: '4px',
-                        fontSize: '0.75rem',
-                        fontWeight: '600'
-                      }}>
-                        {shipment.tracking_type || 'AWB'}
+                      <span
+                        style={{
+                          background:
+                            shipment.tracking_type === "LRN"
+                              ? "#8b5cf6"
+                              : "#3b82f6",
+                          color: "white",
+                          padding: "0.25rem 0.5rem",
+                          borderRadius: "4px",
+                          fontSize: "0.75rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {shipment.tracking_type || "AWB"}
                       </span>
                     </td>
                     <td>{shipment.courier_name || "—"}</td>
                     <td>
                       {shipment.tracking_number ? (
-                        getTrackingUrl(shipment.courier_name, shipment.tracking_number, shipment.tracking_type) ? (
+                        getTrackingUrl(
+                          shipment.courier_name,
+                          shipment.tracking_number,
+                          shipment.tracking_type,
+                        ) ? (
                           <a
-                            href={getTrackingUrl(shipment.courier_name, shipment.tracking_number, shipment.tracking_type)}
+                            href={getTrackingUrl(
+                              shipment.courier_name,
+                              shipment.tracking_number,
+                              shipment.tracking_type,
+                            )}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.trackingLink}
@@ -238,7 +266,9 @@ function Shipments() {
                         "—"
                       )}
                     </td>
-                    <td>{getStatusBadge(shipment.shipment_status || "Pending")}</td>
+                    <td>
+                      {getStatusBadge(shipment.shipment_status || "Pending")}
+                    </td>
                     <td>{shipment.date}</td>
                     <td>
                       <button
@@ -271,10 +301,16 @@ function Shipments() {
 
       {showModal && (
         <div className={styles.modal} onClick={() => setShowModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Update Shipment</h2>
-              <button className={styles.closeButton} onClick={() => setShowModal(false)}>
+              <button
+                className={styles.closeButton}
+                onClick={() => setShowModal(false)}
+              >
                 ×
               </button>
             </div>
@@ -292,14 +328,18 @@ function Shipments() {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>{trackingType === 'AWB' ? 'Courier Name' : 'Transport Name'} *</label>
+              <label className={styles.label}>
+                {trackingType === "AWB" ? "Courier Name" : "Transport Name"} *
+              </label>
               <select
                 className={styles.select}
                 value={courierName}
                 onChange={(e) => setCourierName(e.target.value)}
               >
-                <option value="">Select {trackingType === 'AWB' ? 'Courier' : 'Transport'}</option>
-                {trackingType === 'AWB' ? (
+                <option value="">
+                  Select {trackingType === "AWB" ? "Courier" : "Transport"}
+                </option>
+                {trackingType === "AWB" ? (
                   <>
                     <option value="Delhivery">Delhivery</option>
                     <option value="BlueDart">BlueDart</option>
@@ -324,12 +364,14 @@ function Shipments() {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>{trackingType === 'AWB' ? 'AWB Number' : 'LRN Number'} *</label>
+              <label className={styles.label}>
+                {trackingType === "AWB" ? "AWB Number" : "LRN Number"} *
+              </label>
               <input
                 className={styles.input}
                 value={trackingNumber}
                 onChange={(e) => setTrackingNumber(e.target.value)}
-                placeholder={`Enter ${trackingType === 'AWB' ? 'AWB/Tracking' : 'LRN'} number`}
+                placeholder={`Enter ${trackingType === "AWB" ? "AWB/Tracking" : "LRN"} number`}
               />
             </div>
 
@@ -372,7 +414,10 @@ function Shipments() {
             </div>
 
             <div className={styles.modalFooter}>
-              <button className={styles.cancelButton} onClick={() => setShowModal(false)}>
+              <button
+                className={styles.cancelButton}
+                onClick={() => setShowModal(false)}
+              >
                 Cancel
               </button>
               <button className={styles.saveButton} onClick={updateShipment}>

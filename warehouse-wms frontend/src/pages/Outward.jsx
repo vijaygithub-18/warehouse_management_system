@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Outward.module.css";
 
 function Outward() {
@@ -23,19 +24,19 @@ function Outward() {
 
   // loader functions placed before useEffect
   const loadProducts = () => {
-    fetch("http://localhost:3000/api/products/all")
+    fetch(`${BASE_URL}/products/all`)
       .then((res) => res.json())
       .then((data) => setProducts(data));
   };
 
   const loadCustomers = () => {
-    fetch("http://localhost:3000/api/customers/all")
+    fetch(`${BASE_URL}/customers/all`)
       .then((res) => res.json())
       .then((data) => setCustomers(data));
   };
 
   const loadOutward = () => {
-    fetch("http://localhost:3000/api/outward/all")
+    fetch(`${BASE_URL}/outward/all`)
       .then((res) => res.json())
       .then((data) => setOutward(data));
   };
@@ -65,7 +66,7 @@ function Outward() {
     }
 
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/api/outward/add", {
+    const response = await fetch(`${BASE_URL}/outward/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,25 +121,26 @@ function Outward() {
   };
 
   const filteredOutward = outward.filter((o) => {
-    const matchesCustomer = !filterCustomer || o.customer_id?.toString() === filterCustomer;
+    const matchesCustomer =
+      !filterCustomer || o.customer_id?.toString() === filterCustomer;
     if (!o.date) return matchesCustomer;
 
-    const [year, month, day] = o.date.split('-').map(Number);
+    const [year, month, day] = o.date.split("-").map(Number);
     const recordDate = new Date(year, month - 1, day);
-    
+
     let fromDate = null;
     let toDate = null;
-    
+
     if (filterDateFrom) {
-      const [fYear, fMonth, fDay] = filterDateFrom.split('-').map(Number);
+      const [fYear, fMonth, fDay] = filterDateFrom.split("-").map(Number);
       fromDate = new Date(fYear, fMonth - 1, fDay);
     }
-    
+
     if (filterDateTo) {
-      const [tYear, tMonth, tDay] = filterDateTo.split('-').map(Number);
+      const [tYear, tMonth, tDay] = filterDateTo.split("-").map(Number);
       toDate = new Date(tYear, tMonth - 1, tDay);
     }
-    
+
     const matchesDateFrom = !fromDate || recordDate >= fromDate;
     const matchesDateTo = !toDate || recordDate <= toDate;
 
@@ -348,7 +350,8 @@ function Outward() {
           </div>
         </div>
 
-        <div className="no-print"
+        <div
+          className="no-print"
           style={{
             display: "flex",
             gap: "0.5rem",
@@ -398,10 +401,19 @@ function Outward() {
 
         {filteredOutward.length > 0 ? (
           <>
-            <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
-              <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>OUTWARD REPORT</h1>
-              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()}</p>
-              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Records: {filteredOutward.length}</p>
+            <div
+              className="print-only"
+              style={{ marginBottom: "2rem", display: "none" }}
+            >
+              <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1f2937" }}>
+                OUTWARD REPORT
+              </h1>
+              <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+                Generated: {new Date().toLocaleDateString()}
+              </p>
+              <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+                Total Records: {filteredOutward.length}
+              </p>
             </div>
             <table className={styles.table}>
               <thead>

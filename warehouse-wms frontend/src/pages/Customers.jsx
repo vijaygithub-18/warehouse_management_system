@@ -3,6 +3,7 @@ import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
 import styles from "../styles/pages/Customers.module.css";
+import BASE_URL from "../config";
 
 function Customers() {
   const toast = useToast();
@@ -23,7 +24,7 @@ function Customers() {
   }, []);
 
   const loadCustomers = () => {
-    fetch("http://localhost:3000/api/customers/all")
+    fetch(`${BASE_URL}/customers/all`)
       .then((res) => res.json())
       .then((data) => setCustomers(data));
   };
@@ -34,7 +35,7 @@ function Customers() {
       return;
     }
     if (contact) {
-      const cleanContact = contact.replace(/[^0-9]/g, '');
+      const cleanContact = contact.replace(/[^0-9]/g, "");
       if (cleanContact.length < 10 || cleanContact.length > 15) {
         toast.error("Please enter a valid phone number (10-15 digits)");
         return;
@@ -46,15 +47,15 @@ function Customers() {
     }
 
     const url = editingId
-      ? `http://localhost:3000/api/customers/${editingId}`
-      : "http://localhost:3000/api/customers/add";
+      ? `${BASE_URL}/customers/${editingId}`
+      : `${BASE_URL}/customers/add`;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const response = await fetch(url, {
       method: editingId ? "PUT" : "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({ name, contact, email, address }),
     });
@@ -63,7 +64,11 @@ function Customers() {
       clearForm();
       loadCustomers();
       setShowModal(false);
-      toast.success(editingId ? "Customer updated successfully!" : "Customer added successfully!");
+      toast.success(
+        editingId
+          ? "Customer updated successfully!"
+          : "Customer added successfully!",
+      );
     } else {
       const error = await response.json();
       toast.error(error.error || "Failed to save customer");
@@ -81,10 +86,10 @@ function Customers() {
 
   const deleteCustomer = async (id) => {
     if (!window.confirm("Delete this customer?")) return;
-    const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:3000/api/customers/${id}`, {
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${BASE_URL}/customers/${id}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (response.ok) {
       loadCustomers();
@@ -108,24 +113,29 @@ function Customers() {
   };
 
   const filteredCustomers = customers.filter((c) => {
-    const matchesSearch = c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      c.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesContact = !filterContact || 
+
+    const matchesContact =
+      !filterContact ||
       (filterContact === "has" && c.contact) ||
       (filterContact === "no" && !c.contact);
-    
+
     return matchesSearch && matchesContact;
   });
 
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedCustomers = filteredCustomers.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedCustomers = filteredCustomers.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleItemsPerPageChange = (items) => {
@@ -147,12 +157,18 @@ function Customers() {
           className={styles.searchInput}
           placeholder="🔍 Search customers..."
           value={searchTerm}
-          onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
         />
-        <select 
-          className={styles.filterSelect} 
-          value={filterContact} 
-          onChange={(e) => { setFilterContact(e.target.value); setCurrentPage(1); }}
+        <select
+          className={styles.filterSelect}
+          value={filterContact}
+          onChange={(e) => {
+            setFilterContact(e.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="">All Customers</option>
           <option value="has">Has Contact</option>
@@ -163,11 +179,15 @@ function Customers() {
       <div className={styles.tableCard}>
         <div className={styles.tableHeader}>
           <h3 className={styles.tableTitle}>Customer List</h3>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <span className={styles.resultCount}>
               {filteredCustomers.length} customers
             </span>
-            <ExportButtons data={filteredCustomers} filename="customers" title="Customers List" />
+            <ExportButtons
+              data={filteredCustomers}
+              filename="customers"
+              title="Customers List"
+            />
           </div>
         </div>
 
@@ -186,33 +206,33 @@ function Customers() {
               </thead>
               <tbody>
                 {paginatedCustomers.map((customer) => (
-                <tr key={customer.id}>
-                  <td>
-                    <span className={styles.idBadge}>#{customer.id}</span>
-                  </td>
-                  <td>
-                    <strong>{customer.name}</strong>
-                  </td>
-                  <td>{customer.contact || "—"}</td>
-                  <td>{customer.email || "—"}</td>
-                  <td>{customer.address || "—"}</td>
-                  <td>
-                    <div className={styles.actionButtons}>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => editCustomer(customer)}
-                      >
-                        ✏️ Edit
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => deleteCustomer(customer.id)}
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  <tr key={customer.id}>
+                    <td>
+                      <span className={styles.idBadge}>#{customer.id}</span>
+                    </td>
+                    <td>
+                      <strong>{customer.name}</strong>
+                    </td>
+                    <td>{customer.contact || "—"}</td>
+                    <td>{customer.email || "—"}</td>
+                    <td>{customer.address || "—"}</td>
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => editCustomer(customer)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => deleteCustomer(customer.id)}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 ))}
               </tbody>
             </table>

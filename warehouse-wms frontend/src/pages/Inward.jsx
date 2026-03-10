@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Inward.module.css";
 
 function Inward() {
@@ -25,19 +26,19 @@ function Inward() {
 
   // loader helpers defined ahead of effect to prevent access-before-declaration
   const loadProducts = () => {
-    fetch("http://localhost:3000/api/products/all")
+    fetch(`${BASE_URL}/products/all`)
       .then((res) => res.json())
       .then((data) => setProducts(data));
   };
 
   const loadRacks = () => {
-    fetch("http://localhost:3000/api/racks/all")
+    fetch(`${BASE_URL}/racks/all`)
       .then((res) => res.json())
       .then((data) => setRacks(data));
   };
 
   const loadSuppliers = useCallback(() => {
-    fetch("http://localhost:3000/api/suppliers/all")
+    fetch(`${BASE_URL}/suppliers/all`)
       .then((res) => {
         console.log("Suppliers API response status:", res.status);
         return res.json();
@@ -55,7 +56,7 @@ function Inward() {
   }, [toast]);
 
   const loadInward = () => {
-    fetch("http://localhost:3000/api/inward/all")
+    fetch(`${BASE_URL}/inward/all`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Inward data loaded:", data);
@@ -93,7 +94,7 @@ function Inward() {
     }
 
     const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/api/inward/add", {
+    const response = await fetch(`${BASE_URL}/inward/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -153,43 +154,50 @@ function Inward() {
   };
 
   const filteredInward = inward.filter((i) => {
-    console.log('Filtering record:', { 
-      id: i.id, 
-      supplier_id: i.supplier_id, 
+    console.log("Filtering record:", {
+      id: i.id,
+      supplier_id: i.supplier_id,
       date: i.date,
       filterSupplier,
       filterDateFrom,
-      filterDateTo
+      filterDateTo,
     });
-    
-    const matchesSupplier = !filterSupplier || i.supplier_id?.toString() === filterSupplier;
-    console.log('Supplier match:', matchesSupplier);
-    
+
+    const matchesSupplier =
+      !filterSupplier || i.supplier_id?.toString() === filterSupplier;
+    console.log("Supplier match:", matchesSupplier);
+
     if (!i.date) return matchesSupplier;
 
-    const [year, month, day] = i.date.split('-').map(Number);
+    const [year, month, day] = i.date.split("-").map(Number);
     const recordDate = new Date(year, month - 1, day);
-    
+
     let fromDate = null;
     let toDate = null;
-    
+
     if (filterDateFrom) {
-      const [fYear, fMonth, fDay] = filterDateFrom.split('-').map(Number);
+      const [fYear, fMonth, fDay] = filterDateFrom.split("-").map(Number);
       fromDate = new Date(fYear, fMonth - 1, fDay);
     }
-    
+
     if (filterDateTo) {
-      const [tYear, tMonth, tDay] = filterDateTo.split('-').map(Number);
+      const [tYear, tMonth, tDay] = filterDateTo.split("-").map(Number);
       toDate = new Date(tYear, tMonth - 1, tDay);
     }
-    
+
     const matchesDateFrom = !fromDate || recordDate >= fromDate;
     const matchesDateTo = !toDate || recordDate <= toDate;
-    
-    console.log('Date match:', { matchesDateFrom, matchesDateTo, recordDate, fromDate, toDate });
+
+    console.log("Date match:", {
+      matchesDateFrom,
+      matchesDateTo,
+      recordDate,
+      fromDate,
+      toDate,
+    });
 
     const result = matchesSupplier && matchesDateFrom && matchesDateTo;
-    console.log('Final result:', result);
+    console.log("Final result:", result);
     return result;
   });
 
@@ -388,7 +396,7 @@ function Inward() {
       </div>
 
       <div className={`${styles.tableCard} tableCard`}>
-        <div className={styles.tableHeader} style={{ className: 'no-print' }}>
+        <div className={styles.tableHeader} style={{ className: "no-print" }}>
           <h3 className={styles.tableTitle}>Inward History</h3>
           <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
             <span className={styles.recordCount}>
@@ -412,7 +420,8 @@ function Inward() {
           </div>
         </div>
 
-        <div className="no-print"
+        <div
+          className="no-print"
           style={{
             display: "flex",
             gap: "0.5rem",
@@ -462,10 +471,19 @@ function Inward() {
 
         {filteredInward.length > 0 ? (
           <>
-            <div className="print-only" style={{ marginBottom: '2rem', display: 'none' }}>
-              <h1 style={{ margin: 0, fontSize: '1.8rem', color: '#1f2937' }}>INWARD REPORT</h1>
-              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Generated: {new Date().toLocaleDateString()}</p>
-              <p style={{ margin: '0.5rem 0', color: '#6b7280' }}>Total Records: {filteredInward.length}</p>
+            <div
+              className="print-only"
+              style={{ marginBottom: "2rem", display: "none" }}
+            >
+              <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1f2937" }}>
+                INWARD REPORT
+              </h1>
+              <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+                Generated: {new Date().toLocaleDateString()}
+              </p>
+              <p style={{ margin: "0.5rem 0", color: "#6b7280" }}>
+                Total Records: {filteredInward.length}
+              </p>
             </div>
             <table className={styles.table}>
               <thead>

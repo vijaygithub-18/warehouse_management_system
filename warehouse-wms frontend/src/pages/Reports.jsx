@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "../components/ToastContext";
 import Pagination from "../components/Pagination";
 import ExportButtons from "../components/ExportButtons";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Reports.module.css";
 
 function Reports() {

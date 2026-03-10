@@ -56,6 +56,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import BASE_URL from "../config";
 import styles from "../styles/pages/Dashboard.module.css";
 
 function Dashboard() {
@@ -74,7 +75,7 @@ function Dashboard() {
     inward: { count: 0, quantity: 0 },
     outward: { count: 0, quantity: 0 },
     adjustments: 0,
-    pendingShipments: 0
+    pendingShipments: 0,
   });
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -84,39 +85,19 @@ function Dashboard() {
     setRefreshing(true);
     console.log("🔄 Loading dashboard data...");
     Promise.all([
-      fetch("http://localhost:3000/api/dashboard/total-products").then((res) =>
+      fetch(`${BASE_URL}/dashboard/total-products`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/total-stock`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/low-stock`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/recent-inward`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/financial-metrics`).then((res) =>
         res.json(),
       ),
-      fetch("http://localhost:3000/api/dashboard/total-stock").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/low-stock").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/recent-inward").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/financial-metrics").then(
-        (res) => res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/stock-value").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/order-status").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/top-products").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/monthly-trend").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/category-stock").then((res) =>
-        res.json(),
-      ),
-      fetch("http://localhost:3000/api/dashboard/today-summary").then((res) =>
-        res.json(),
-      ),
+      fetch(`${BASE_URL}/dashboard/stock-value`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/order-status`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/top-products`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/monthly-trend`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/category-stock`).then((res) => res.json()),
+      fetch(`${BASE_URL}/dashboard/today-summary`).then((res) => res.json()),
     ])
       .then(
         ([
@@ -272,8 +253,8 @@ function Dashboard() {
             <div className={styles.statIcon}>📦</div>
           </div>
           <h2 className={styles.statValue}>{totalProducts}</h2>
-          <button 
-            onClick={() => navigate('/products')} 
+          <button
+            onClick={() => navigate("/products")}
             className={styles.quickAction}
           >
             View All →
@@ -286,8 +267,8 @@ function Dashboard() {
             <div className={styles.statIcon}>📊</div>
           </div>
           <h2 className={styles.statValue}>{totalStock.toLocaleString()}</h2>
-          <button 
-            onClick={() => navigate('/inventory')} 
+          <button
+            onClick={() => navigate("/inventory")}
             className={styles.quickAction}
           >
             View Inventory →
@@ -300,16 +281,19 @@ function Dashboard() {
             <div className={styles.statIcon}>⚠️</div>
           </div>
           <h2 className={styles.statValue}>{lowStock.length}</h2>
-          <button 
+          <button
             onClick={() => {
               if (lowStock.length > 0) {
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: "smooth",
+                });
               }
-            }} 
+            }}
             className={styles.quickAction}
             disabled={lowStock.length === 0}
           >
-            {lowStock.length > 0 ? 'View Details ↓' : 'All Good ✓'}
+            {lowStock.length > 0 ? "View Details ↓" : "All Good ✓"}
           </button>
         </div>
 
@@ -319,8 +303,8 @@ function Dashboard() {
             <div className={styles.statIcon}>📥</div>
           </div>
           <h2 className={styles.statValue}>{recentInward.length}</h2>
-          <button 
-            onClick={() => navigate('/inward')} 
+          <button
+            onClick={() => navigate("/inward")}
             className={styles.quickAction}
           >
             View All →
@@ -335,11 +319,15 @@ function Dashboard() {
           <div className={styles.summaryCard}>
             <div className={styles.summaryIcon}>📦</div>
             <div className={styles.summaryContent}>
-              <h3 className={styles.summaryValue}>{todaySummary.inward.count}</h3>
-              <p className={styles.summaryLabel}>Inward Today ({todaySummary.inward.quantity} units)</p>
+              <h3 className={styles.summaryValue}>
+                {todaySummary.inward.count}
+              </h3>
+              <p className={styles.summaryLabel}>
+                Inward Today ({todaySummary.inward.quantity} units)
+              </p>
             </div>
-            <button 
-              onClick={() => navigate('/inward')} 
+            <button
+              onClick={() => navigate("/inward")}
               className={styles.summaryBtn}
             >
               + Add Inward
@@ -349,11 +337,15 @@ function Dashboard() {
           <div className={styles.summaryCard}>
             <div className={styles.summaryIcon}>📤</div>
             <div className={styles.summaryContent}>
-              <h3 className={styles.summaryValue}>{todaySummary.outward.count}</h3>
-              <p className={styles.summaryLabel}>Outward Today ({todaySummary.outward.quantity} units)</p>
+              <h3 className={styles.summaryValue}>
+                {todaySummary.outward.count}
+              </h3>
+              <p className={styles.summaryLabel}>
+                Outward Today ({todaySummary.outward.quantity} units)
+              </p>
             </div>
-            <button 
-              onClick={() => navigate('/outward')} 
+            <button
+              onClick={() => navigate("/outward")}
               className={styles.summaryBtn}
             >
               + Add Outward
@@ -363,11 +355,13 @@ function Dashboard() {
           <div className={styles.summaryCard}>
             <div className={styles.summaryIcon}>⚖️</div>
             <div className={styles.summaryContent}>
-              <h3 className={styles.summaryValue}>{todaySummary.adjustments}</h3>
+              <h3 className={styles.summaryValue}>
+                {todaySummary.adjustments}
+              </h3>
               <p className={styles.summaryLabel}>Adjustments Today</p>
             </div>
-            <button 
-              onClick={() => navigate('/adjustments')} 
+            <button
+              onClick={() => navigate("/adjustments")}
               className={styles.summaryBtn}
             >
               + Adjust Stock
@@ -377,11 +371,13 @@ function Dashboard() {
           <div className={styles.summaryCard}>
             <div className={styles.summaryIcon}>🚚</div>
             <div className={styles.summaryContent}>
-              <h3 className={styles.summaryValue}>{todaySummary.pendingShipments}</h3>
+              <h3 className={styles.summaryValue}>
+                {todaySummary.pendingShipments}
+              </h3>
               <p className={styles.summaryLabel}>Pending Shipments</p>
             </div>
-            <button 
-              onClick={() => navigate('/shipments')} 
+            <button
+              onClick={() => navigate("/shipments")}
               className={styles.summaryBtn}
             >
               View Shipments
@@ -617,6 +613,7 @@ function Dashboard() {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="count"
+                    nameKey="status"
                   >
                     {orderStatus.sales.map((entry, index) => (
                       <Cell
@@ -652,6 +649,7 @@ function Dashboard() {
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="count"
+                    nameKey="status"
                   >
                     {orderStatus.purchases.map((entry, index) => (
                       <Cell

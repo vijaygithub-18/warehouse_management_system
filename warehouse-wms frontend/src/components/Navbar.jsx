@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/components/Navbar.module.css";
+import BASE_URL from "../config";
 
 function Navbar() {
   const location = useLocation();
@@ -43,11 +44,11 @@ function Navbar() {
     try {
       const today = new Date().toISOString().split("T")[0];
 
-      const inwardRes = await fetch(`http://localhost:3000/api/inward/all`);
+      const inwardRes = await fetch(`${BASE_URL}/inward/all`);
       const inwardData = await inwardRes.json();
       const todayInward = inwardData.filter((i) => i.date === today).length;
 
-      const outwardRes = await fetch(`http://localhost:3000/api/outward/all`);
+      const outwardRes = await fetch(`${BASE_URL}/outward/all`);
       const outwardData = await outwardRes.json();
       const todayOutward = outwardData.filter((o) => o.date === today).length;
 
@@ -59,7 +60,7 @@ function Navbar() {
 
   async function loadNotifications() {
     try {
-      const res = await fetch("http://localhost:3000/api/inventory/stock");
+      const res = await fetch(`${BASE_URL}/inventory/stock`);
       const data = await res.json();
       console.log("📊 All inventory items:", data);
 

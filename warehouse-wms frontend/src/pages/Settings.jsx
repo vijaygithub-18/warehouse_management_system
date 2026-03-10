@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react';
-import { useToast } from '../components/ToastContext';
-import styles from '../styles/pages/Settings.module.css';
+import { useState, useEffect } from "react";
+import { useToast } from "../components/ToastContext";
+import BASE_URL from "../config";
+import styles from "../styles/pages/Settings.module.css";
 
 function Settings() {
   const toast = useToast();
   const [emailSettings, setEmailSettings] = useState({
     enabled: false,
-    smtp_host: '',
-    smtp_port: '',
-    smtp_user: '',
-    smtp_password: '',
-    from_email: '',
-    from_name: 'Warehouse WMS',
-    notification_emails: '',
+    smtp_host: "",
+    smtp_port: "",
+    smtp_user: "",
+    smtp_password: "",
+    from_email: "",
+    from_name: "Warehouse WMS",
+    notification_emails: "",
     low_stock_threshold: 50,
     send_daily_report: false,
-    send_low_stock_alert: true
+    send_low_stock_alert: true,
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -28,16 +29,16 @@ function Settings() {
 
   const loadSettings = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/settings/email', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:3000/api/settings/email", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
         setEmailSettings(data);
       }
     } catch (error) {
-      console.error('Failed to load settings:', error);
+      console.error("Failed to load settings:", error);
     } finally {
       setLoading(false);
     }
@@ -46,25 +47,25 @@ function Settings() {
   const saveSettings = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/settings/email', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/settings/email`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(emailSettings)
+        body: JSON.stringify(emailSettings),
       });
 
       if (res.ok) {
-        toast.success('Email settings saved successfully!');
+        toast.success("Email settings saved successfully!");
       } else {
         const error = await res.json();
-        toast.error(error.error || 'Failed to save settings');
+        toast.error(error.error || "Failed to save settings");
       }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to save settings');
+      console.error("Error:", error);
+      toast.error("Failed to save settings");
     } finally {
       setSaving(false);
     }
@@ -72,31 +73,31 @@ function Settings() {
 
   const testSMTP = async () => {
     if (!emailSettings.smtp_host || !emailSettings.smtp_user) {
-      toast.error('Please fill in SMTP host and user');
+      toast.error("Please fill in SMTP host and user");
       return;
     }
 
     setTestingSMTP(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/settings/test-email', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/settings/test-email`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(emailSettings)
+        body: JSON.stringify(emailSettings),
       });
 
       const data = await res.json();
       if (res.ok) {
-        toast.success('Test email sent successfully! Check your inbox.');
+        toast.success("Test email sent successfully! Check your inbox.");
       } else {
-        toast.error(data.error || 'Failed to send test email');
+        toast.error(data.error || "Failed to send test email");
       }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to send test email');
+      console.error("Error:", error);
+      toast.error("Failed to send test email");
     } finally {
       setTestingSMTP(false);
     }
@@ -105,31 +106,31 @@ function Settings() {
   const checkLowStock = async () => {
     setCheckingLowStock(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:3000/api/settings/check-low-stock', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BASE_URL}/settings/check-low-stock`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = await res.json();
       if (res.ok) {
-        toast.success(data.message || 'Low stock check completed!');
+        toast.success(data.message || "Low stock check completed!");
       } else {
-        toast.error(data.error || 'Failed to check low stock');
+        toast.error(data.error || "Failed to check low stock");
       }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Failed to check low stock');
+      console.error("Error:", error);
+      toast.error("Failed to check low stock");
     } finally {
       setCheckingLowStock(false);
     }
   };
 
   const handleChange = (field, value) => {
-    setEmailSettings(prev => ({ ...prev, [field]: value }));
+    setEmailSettings((prev) => ({ ...prev, [field]: value }));
   };
 
   if (loading) {
@@ -140,19 +141,21 @@ function Settings() {
     <div className={styles.settings}>
       <div className={styles.header}>
         <h1 className={styles.title}>⚙️ Email Notification Settings</h1>
-        <p className={styles.subtitle}>Configure email notifications for low stock alerts and reports</p>
+        <p className={styles.subtitle}>
+          Configure email notifications for low stock alerts and reports
+        </p>
       </div>
 
       <div className={styles.settingsCard}>
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>📧 Email Configuration</h2>
-          
+
           <div className={styles.toggleGroup}>
             <label className={styles.toggleLabel}>
               <input
                 type="checkbox"
                 checked={emailSettings.enabled}
-                onChange={(e) => handleChange('enabled', e.target.checked)}
+                onChange={(e) => handleChange("enabled", e.target.checked)}
                 className={styles.checkbox}
               />
               <span>Enable Email Notifications</span>
@@ -165,7 +168,7 @@ function Settings() {
               <input
                 className={styles.input}
                 value={emailSettings.smtp_host}
-                onChange={(e) => handleChange('smtp_host', e.target.value)}
+                onChange={(e) => handleChange("smtp_host", e.target.value)}
                 placeholder="smtp.gmail.com"
                 disabled={!emailSettings.enabled}
               />
@@ -177,7 +180,7 @@ function Settings() {
                 className={styles.input}
                 type="number"
                 value={emailSettings.smtp_port}
-                onChange={(e) => handleChange('smtp_port', e.target.value)}
+                onChange={(e) => handleChange("smtp_port", e.target.value)}
                 placeholder="587"
                 disabled={!emailSettings.enabled}
               />
@@ -188,7 +191,7 @@ function Settings() {
               <input
                 className={styles.input}
                 value={emailSettings.smtp_user}
-                onChange={(e) => handleChange('smtp_user', e.target.value)}
+                onChange={(e) => handleChange("smtp_user", e.target.value)}
                 placeholder="your-email@gmail.com"
                 disabled={!emailSettings.enabled}
               />
@@ -200,7 +203,7 @@ function Settings() {
                 className={styles.input}
                 type="password"
                 value={emailSettings.smtp_password}
-                onChange={(e) => handleChange('smtp_password', e.target.value)}
+                onChange={(e) => handleChange("smtp_password", e.target.value)}
                 placeholder="••••••••"
                 disabled={!emailSettings.enabled}
               />
@@ -211,7 +214,7 @@ function Settings() {
               <input
                 className={styles.input}
                 value={emailSettings.from_email}
-                onChange={(e) => handleChange('from_email', e.target.value)}
+                onChange={(e) => handleChange("from_email", e.target.value)}
                 placeholder="noreply@warehouse.com"
                 disabled={!emailSettings.enabled}
               />
@@ -222,19 +225,23 @@ function Settings() {
               <input
                 className={styles.input}
                 value={emailSettings.from_name}
-                onChange={(e) => handleChange('from_name', e.target.value)}
+                onChange={(e) => handleChange("from_name", e.target.value)}
                 placeholder="Warehouse WMS"
                 disabled={!emailSettings.enabled}
               />
             </div>
           </div>
 
-          <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
-            <label className={styles.label}>Notification Recipients (comma-separated)</label>
+          <div className={styles.formGroup} style={{ marginTop: "1rem" }}>
+            <label className={styles.label}>
+              Notification Recipients (comma-separated)
+            </label>
             <textarea
               className={styles.textarea}
               value={emailSettings.notification_emails}
-              onChange={(e) => handleChange('notification_emails', e.target.value)}
+              onChange={(e) =>
+                handleChange("notification_emails", e.target.value)
+              }
               placeholder="admin@company.com, manager@company.com"
               disabled={!emailSettings.enabled}
               rows={3}
@@ -244,18 +251,22 @@ function Settings() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>🔔 Notification Preferences</h2>
-          
+
           <div className={styles.formGroup}>
             <label className={styles.label}>Low Stock Threshold</label>
             <input
               className={styles.input}
               type="number"
               value={emailSettings.low_stock_threshold}
-              onChange={(e) => handleChange('low_stock_threshold', e.target.value)}
+              onChange={(e) =>
+                handleChange("low_stock_threshold", e.target.value)
+              }
               placeholder="50"
               disabled={!emailSettings.enabled}
             />
-            <p className={styles.hint}>Send alert when stock falls below this value</p>
+            <p className={styles.hint}>
+              Send alert when stock falls below this value
+            </p>
           </div>
 
           <div className={styles.toggleGroup}>
@@ -263,7 +274,9 @@ function Settings() {
               <input
                 type="checkbox"
                 checked={emailSettings.send_low_stock_alert}
-                onChange={(e) => handleChange('send_low_stock_alert', e.target.checked)}
+                onChange={(e) =>
+                  handleChange("send_low_stock_alert", e.target.checked)
+                }
                 className={styles.checkbox}
                 disabled={!emailSettings.enabled}
               />
@@ -276,7 +289,9 @@ function Settings() {
               <input
                 type="checkbox"
                 checked={emailSettings.send_daily_report}
-                onChange={(e) => handleChange('send_daily_report', e.target.checked)}
+                onChange={(e) =>
+                  handleChange("send_daily_report", e.target.checked)
+                }
                 className={styles.checkbox}
                 disabled={!emailSettings.enabled}
               />
@@ -291,21 +306,21 @@ function Settings() {
             onClick={testSMTP}
             disabled={!emailSettings.enabled || testingSMTP}
           >
-            {testingSMTP ? '📤 Sending...' : '📤 Send Test Email'}
+            {testingSMTP ? "📤 Sending..." : "📤 Send Test Email"}
           </button>
           <button
             className={styles.alertButton}
             onClick={checkLowStock}
             disabled={!emailSettings.enabled || checkingLowStock}
           >
-            {checkingLowStock ? '⚠️ Checking...' : '⚠️ Check Low Stock'}
+            {checkingLowStock ? "⚠️ Checking..." : "⚠️ Check Low Stock"}
           </button>
           <button
             className={styles.saveButton}
             onClick={saveSettings}
             disabled={saving}
           >
-            {saving ? '💾 Saving...' : '💾 Save Settings'}
+            {saving ? "💾 Saving..." : "💾 Save Settings"}
           </button>
         </div>
       </div>
