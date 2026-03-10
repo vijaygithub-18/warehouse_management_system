@@ -30,7 +30,7 @@ function Settings() {
   const loadSettings = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:3000/api/settings/email", {
+      const res = await fetch(`${BASE_URL}/settings/email`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {

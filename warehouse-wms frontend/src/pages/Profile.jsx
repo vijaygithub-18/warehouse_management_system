@@ -27,7 +27,7 @@ function Profile() {
 
   const loadUserProfile = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/users/profile", {
+      const res = await fetch(`${BASE_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,10 +53,10 @@ function Profile() {
 
   const loadUserStats = async () => {
     try {
-      const inwardRes = await fetch("http://localhost:3000/api/inward/all");
+      const inwardRes = await fetch(`${BASE_URL}/inward/all`);
       const inwardData = await inwardRes.json();
 
-      const outwardRes = await fetch("http://localhost:3000/api/outward/all");
+      const outwardRes = await fetch(`${BASE_URL}/outward/all`);
       const outwardData = await outwardRes.json();
 
       setStats({
@@ -77,7 +77,7 @@ function Profile() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/users/profile", {
+      const res = await fetch(`${BASE_URL}/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

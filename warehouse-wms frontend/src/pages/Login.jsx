@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/pages/Login.module.css";
 import logoImage from "../assets/image.png";
+import BASE_URL from "../config";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -27,7 +28,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

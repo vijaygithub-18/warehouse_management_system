@@ -37,7 +37,7 @@ function Reports() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/products/all");
+        const res = await fetch(`${BASE_URL}/products/all`);
         const data = await res.json();
         setProducts(data.data || data);
       } catch {
@@ -48,7 +48,7 @@ function Reports() {
   }, []);
 
   const loadStock = async () => {
-    const res = await fetch("http://localhost:3000/api/reports/stock");
+    const res = await fetch(`${BASE_URL}/reports/stock`);
     const data = await res.json();
     setStock(data);
     setInward([]);
@@ -60,9 +60,7 @@ function Reports() {
       toast.error("Please select date range");
       return;
     }
-    const res = await fetch(
-      `http://localhost:3000/api/reports/inward?from=${from}&to=${to}`,
-    );
+    const res = await fetch(`${BASE_URL}/reports/inward?from=${from}&to=${to}`);
     const data = await res.json();
     setInward(data);
     setStock([]);
@@ -75,7 +73,7 @@ function Reports() {
       return;
     }
     const res = await fetch(
-      `http://localhost:3000/api/reports/outward?from=${from}&to=${to}`,
+      `${BASE_URL}/reports/outward?from=${from}&to=${to}`,
     );
     const data = await res.json();
     setOutward(data);
@@ -83,14 +81,14 @@ function Reports() {
   };
 
   const loadSuppliers = async () => {
-    const res = await fetch("http://localhost:3000/api/reports/suppliers");
+    const res = await fetch(`${BASE_URL}/reports/suppliers`);
     const data = await res.json();
     setSuppliers(data);
     clearOtherReports("suppliers");
   };
 
   const loadCustomers = async () => {
-    const res = await fetch("http://localhost:3000/api/reports/customers");
+    const res = await fetch(`${BASE_URL}/reports/customers`);
     const data = await res.json();
     setCustomers(data);
     clearOtherReports("customers");
@@ -101,7 +99,7 @@ function Reports() {
       toast.error("Please select a product");
       return;
     }
-    let url = `http://localhost:3000/api/reports/product-movement?product_id=${selectedProduct}`;
+    let url = `${BASE_URL}/reports/product-movement?product_id=${selectedProduct}`;
     if (from && to) {
       url += `&from=${from}&to=${to}`;
     }

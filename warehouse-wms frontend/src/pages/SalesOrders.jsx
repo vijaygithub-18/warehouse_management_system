@@ -150,7 +150,7 @@ function SalesOrders() {
     }
 
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:3000/api/sales-orders/create", {
+    const res = await fetch(`${BASE_URL}/sales-orders/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -179,7 +179,7 @@ function SalesOrders() {
 
   const updateStatus = async (id, status) => {
     const token = localStorage.getItem("token");
-    await fetch(`http://localhost:3000/api/sales-orders/${id}/status`, {
+    await fetch(`${BASE_URL}/sales-orders/${id}/status`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -191,9 +191,7 @@ function SalesOrders() {
   };
 
   const viewOrderDetails = async (orderId) => {
-    const res = await fetch(
-      `http://localhost:3000/api/sales-orders/${orderId}`,
-    );
+    const res = await fetch(`${BASE_URL}/sales-orders/${orderId}`);
     const data = await res.json();
     setSelectedOrder(data);
     setShowDetailsModal(true);
@@ -210,7 +208,7 @@ function SalesOrders() {
       return;
 
     const token = localStorage.getItem("token");
-    const res = await fetch(`http://localhost:3000/api/sales-orders/${id}`, {
+    const res = await fetch(`${BASE_URL}/sales-orders/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
