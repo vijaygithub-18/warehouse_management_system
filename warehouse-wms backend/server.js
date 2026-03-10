@@ -26,7 +26,8 @@ const settingsRoutes = require("./routes/settingsRoutes");
 const shipmentRoutes = require("./routes/shipmentRoutes");
 
 const app = express();
-const port = 3000;
+/* IMPORTANT FOR RENDER */
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -127,6 +128,6 @@ cron.schedule("0 8 * * *", async () => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
