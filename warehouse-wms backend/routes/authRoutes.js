@@ -5,7 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { logActivity } = require("../utils/activityLogger");
 
-const JWT_SECRET = "your-secret-key-change-in-production";
+const JWT_SECRET =
+  process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
 // Register
 router.post("/register", async (req, res) => {
@@ -186,13 +187,13 @@ router.post("/forgot-password", async (req, res) => {
       "SELECT * FROM email_settings LIMIT 1",
     );
     const settings = settingsRes.rows[0];
-    
+
     if (!settings || !settings.enabled) {
-      return res.status(500).json({ 
-        error: "Email service not configured. Please contact administrator." 
+      return res.status(500).json({
+        error: "Email service not configured. Please contact administrator.",
       });
     }
-    
+
     try {
       const EmailService = require("../utils/emailService");
       const emailService = new EmailService(settings);
@@ -206,8 +207,8 @@ router.post("/forgot-password", async (req, res) => {
       res.json({ message: "Password reset link has been sent to your email" });
     } catch (emailError) {
       console.error("Email send error:", emailError);
-      return res.status(500).json({ 
-        error: "Failed to send reset email. Please try again later." 
+      return res.status(500).json({
+        error: "Failed to send reset email. Please try again later.",
       });
     }
   } catch (error) {
