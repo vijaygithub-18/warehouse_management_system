@@ -197,7 +197,7 @@ router.post("/forgot-password", async (req, res) => {
     try {
       const EmailService = require("../utils/emailService");
       const emailService = new EmailService(settings);
-      const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+      const resetLink = `https://warehouse-management-system-orpin.vercel.app/reset-password?token=${token}`;
       const html = `<p>Click <a href=\"${resetLink}\">here</a> to reset your password. Link expires in 1 hour.</p>`;
       await emailService.sendEmail(
         user.email,
