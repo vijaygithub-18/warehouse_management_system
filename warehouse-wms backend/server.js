@@ -44,7 +44,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/adjustments", adjustmentRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/customers", customerRoutes);
-app.use("/api/auth", authRoutes.router);
+app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/activity", activityRoutes);
 app.use("/api/sales-orders", salesOrderRoutes);
